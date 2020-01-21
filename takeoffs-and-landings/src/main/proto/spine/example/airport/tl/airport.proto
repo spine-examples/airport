@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package spine.example.airport.tl;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.tl";
+option java_outer_classname = "AirportProto";
+option java_multiple_files = true;
+
+message AirportCode {
+
+    string code = 1 [(required) = true];
+}

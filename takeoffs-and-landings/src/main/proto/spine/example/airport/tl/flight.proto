@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package spine.example.airport.tl;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.tl";
+option java_outer_classname = "FlightProto";
+option java_multiple_files = true;
+
+import "spine/example/airport/airtraffic/aircraft.proto";
+import "spine/example/airport/tl/airport.proto";
+import "spine/time/time.proto";
+
+message FlightId {
+
+    string uuid = 1;
+}
+
+message Flight {
+    option (entity).kind = AGGREGATE;
+
+    FlightId id = 1;
+
+    airtraffic.AircraftId aircraft = 2 [(required) = true, (validate) = true];
+
+    time.OffsetDateTime scheduled_departure = 3 [(required) = true, (validate) = true];
+    time.OffsetDateTime actual_departure = 4 [(required) = false, (validate) = true];
+
+    time.OffsetDateTime scheduled_arrival = 5 [(required) = true, (validate) = true];
+    time.OffsetDateTime actual_arrival = 6 [(required) = false, (validate) = true];
+
+    AirportCode from = 7 [(required) = true, (validate) = true];
+    AirportCode to = 8 [(required) = true, (validate) = true];
+}
+
+

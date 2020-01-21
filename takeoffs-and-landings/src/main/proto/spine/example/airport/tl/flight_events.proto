@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package spine.example.airport.tl;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.tl";
+option java_outer_classname = "FlightEventsProto";
+option java_multiple_files = true;
+
+import "spine/example/airport/airtraffic/aircraft.proto";
+import "spine/example/airport/tl/airport.proto";
+import "spine/example/airport/tl/flight.proto";
+import "spine/time/time.proto";
+
+message FlightScheduled {
+
+    FlightId id = 1;
+
+    airtraffic.AircraftId aircraft = 2 [(required) = true, (validate) = true];
+
+    time.OffsetDateTime scheduled_departure = 3 [(required) = true, (validate) = true];
+    time.OffsetDateTime scheduled_arrival = 4 [(required) = true, (validate) = true];
+
+    AirportCode from = 5 [(required) = true, (validate) = true];
+    AirportCode to = 6 [(required) = true, (validate) = true];
+}
+
+message FlightRescheduled {
+
+    FlightId id = 1;
+
+    time.OffsetDateTime scheduled_departure = 2 [(required) = true, (validate) = true];
+    time.OffsetDateTime scheduled_arrival = 3 [(required) = true, (validate) = true];
+}
