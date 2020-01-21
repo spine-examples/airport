@@ -20,22 +20,12 @@
 
 package io.spine.example.airport.tl;
 
-import io.spine.example.airport.airtraffic.AircraftAggregate;
 import io.spine.server.BoundedContext;
-import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
 
-import java.io.IOException;
-
 final class TakeoffsAndLandings {
-
-    static {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
-    }
 
     static final String CONTEXT_NAME = "Takeoffs and Landings";
     private static final BoundedContext context = buildContext();
@@ -51,10 +41,13 @@ final class TakeoffsAndLandings {
     }
 
     private static BoundedContext buildContext() {
+        ServerEnvironment env = ServerEnvironment.instance();
+        env.configureStorage(InMemoryStorageFactory.newInstance());
+        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
+
         return BoundedContext
                 .singleTenant(CONTEXT_NAME)
                 .add(FlightAggregate.class)
-                .add(AircraftAggregate.class)
                 .build();
     }
 }
