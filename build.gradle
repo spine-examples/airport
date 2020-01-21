@@ -1,0 +1,9 @@
+group 'io.spine.example'
+version '1.0-SNAPSHOT'
+
+subprojects {
+
+    repositories {
+        jcenter()
+    }
+}
