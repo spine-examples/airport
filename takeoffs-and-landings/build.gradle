@@ -7,6 +7,5 @@ spine.enableJava().server()
 sourceCompatibility = 1.8
 
 dependencies {
-    implementation project(':air-traffic')
     implementation "io.grpc:grpc-netty-shaded:1.26.0"
 }
