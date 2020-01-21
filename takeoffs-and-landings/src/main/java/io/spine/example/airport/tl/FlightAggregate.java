@@ -23,8 +23,26 @@ package io.spine.example.airport.tl;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import io.spine.server.event.React;
+import io.spine.server.model.Nothing;
+import io.spine.server.tuple.EitherOf2;
+import io.spine.time.OffsetDateTime;
+import io.spine.time.OffsetDateTimes;
+
+import java.time.Duration;
+
+import static io.spine.server.tuple.EitherOf2.withA;
+import static io.spine.server.tuple.EitherOf2.withB;
+import static io.spine.time.OffsetDateTimes.toJavaTime;
+import static java.lang.Math.abs;
 
 class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> {
+
+    private static final int WIND_DIRECTION_CHANGE_THRESHOLD = 30;
+    private static final int TEMPERATURE_CHANGE_THRESHOLD = 30;
+    private static final int WIND_SPEED_THRESHOLD = 150;
+    private static final Duration QUARTER_OF_AN_HOUR = Duration.ofMinutes(15);
+    private static final Duration HALF_AN_HOUR = Duration.ofMinutes(30);
 
     @Assign
     FlightScheduled handle(ScheduleFlight command) {
@@ -48,6 +66,31 @@ class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> {
                 .vBuild();
     }
 
+    @React(external = true)
+    EitherOf2<FlightRescheduled, Nothing> on(WindSpeedChanged event) {
+        double newDirection = event.getNewSpeed().getAzimuth();
+        double previousDirection = event.getPreviousSpeed().getAzimuth();
+        if (abs(previousDirection - newDirection) > WIND_DIRECTION_CHANGE_THRESHOLD) {
+            return withA(postpone(QUARTER_OF_AN_HOUR));
+        }
+        double windSpeed = event.getNewSpeed().getValue();
+        if (windSpeed > WIND_SPEED_THRESHOLD) {
+            return withA(postpone(HALF_AN_HOUR));
+        }
+        return withB(nothing());
+    }
+
+    @React(external = true)
+    EitherOf2<FlightRescheduled, Nothing> on(TemperatureChanged event) {
+        float newTemperature = event.getNewTemperature().getDegreesCelsius();
+        float previousTemperature = event.getPreviousTemperature().getDegreesCelsius();
+        if (abs(previousTemperature - newTemperature) > TEMPERATURE_CHANGE_THRESHOLD) {
+            return withA(postpone(QUARTER_OF_AN_HOUR));
+        } else {
+            return withB(nothing());
+        }
+    }
+
     @Apply
     private void on(FlightScheduled event) {
         builder().setFrom(event.getFrom())
@@ -60,5 +103,24 @@ class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> {
     private void on(FlightRescheduled event) {
         builder().setScheduledDeparture(event.getScheduledDeparture())
                  .setScheduledArrival(event.getScheduledArrival());
+    }
+
+    private FlightRescheduled postpone(Duration forHowLong) {
+        OffsetDateTime scheduledDeparture = state().getScheduledDeparture();
+        OffsetDateTime newDeparture = OffsetDateTimes.of(
+                toJavaTime(scheduledDeparture).plus(forHowLong)
+        );
+
+        OffsetDateTime scheduledArrival = state().getScheduledArrival();
+        OffsetDateTime newArrival = OffsetDateTimes.of(
+                toJavaTime(scheduledArrival).plus(forHowLong)
+        );
+
+        return FlightRescheduled
+                .newBuilder()
+                .setId(id())
+                .setScheduledDeparture(newDeparture)
+                .setScheduledArrival(newArrival)
+                .vBuild();
     }
 }
