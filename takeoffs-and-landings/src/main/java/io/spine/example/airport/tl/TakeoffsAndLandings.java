@@ -20,16 +20,25 @@
 
 package io.spine.example.airport.tl;
 
+import io.spine.example.airport.airtraffic.AircraftAggregate;
 import io.spine.server.BoundedContext;
-import io.spine.server.BoundedContextBuilder;
 import io.spine.server.Server;
+import io.spine.server.ServerEnvironment;
+import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
 
 import java.io.IOException;
 
 final class TakeoffsAndLandings {
 
+    static {
+        ServerEnvironment env = ServerEnvironment.instance();
+        env.configureStorage(InMemoryStorageFactory.newInstance());
+        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
+    }
+
     static final String CONTEXT_NAME = "Takeoffs and Landings";
-    private static final int PORT = 8484;
+    private static final BoundedContext context = buildContext();
 
     /**
      * Prevents the utility class instantiation.
@@ -37,18 +46,15 @@ final class TakeoffsAndLandings {
     private TakeoffsAndLandings() {
     }
 
-    public static void main(String[] args) throws IOException {
-        Server server = Server
-                .atPort(PORT)
-                .add(context())
-                .build();
-        server.start();
-        server.awaitTermination();
+    public static BoundedContext context() {
+        return context;
     }
 
-    private static BoundedContextBuilder context() {
+    private static BoundedContext buildContext() {
         return BoundedContext
                 .singleTenant(CONTEXT_NAME)
-                .add(FlightAggregate.class);
+                .add(FlightAggregate.class)
+                .add(AircraftAggregate.class)
+                .build();
     }
 }

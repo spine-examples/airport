@@ -1,7 +1,6 @@
 rootProject.name = 'airport'
 
 include 'takeoffs-and-landings'
-include 'air-traffic'
 include 'security-checks'
 include 'weather'
 include 'airplane-supplies'
