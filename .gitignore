@@ -62,9 +62,6 @@ gradle-app.setting
 # Spine internal directory for storing intermediate artifacts
 **/.spine/**
 
-# Spine model compiler auto-generated resources
-/tools/gradle-plugins/model-compiler/src/main/resources/spine-protoc.gradle
-
 # Login details to Maven repository.
 # Each workstation should have developer's login defined in this file.
 credentials.tar

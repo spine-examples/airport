@@ -7,5 +7,6 @@ spine.enableJava().server()
 sourceCompatibility = 1.8
 
 dependencies {
-    implementation "io.grpc:grpc-netty-shaded:1.26.0"
+    implementation "io.grpc:grpc-netty-shaded:$deps.versions.grpc"
+    implementation "com.squareup.okhttp3:okhttp:4.3.1"
 }

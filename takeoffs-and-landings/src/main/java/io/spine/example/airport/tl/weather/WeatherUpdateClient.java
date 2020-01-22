@@ -1,0 +1,87 @@
+/*
+ * Copyright 2020, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.example.airport.tl.weather;
+
+import io.spine.net.Url;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+
+public class WeatherUpdateClient implements AutoCloseable {
+
+    private static final Duration REQUEST_FREQUENCY = Duration.ofSeconds(5);
+    private final OkHttpClient client = new OkHttpClient();
+    private final WeatherUpdateEndpoint endpoint = new WeatherUpdateEndpoint();
+    private final Url weatherService;
+    private Instant lastEventTime;
+    private volatile boolean running = true;
+
+    public WeatherUpdateClient(Instant lastEventTime, Url weatherService) {
+        this.lastEventTime = checkNotNull(lastEventTime);
+        this.weatherService = checkNotNull(weatherService);
+    }
+
+    public WeatherUpdateClient(Url weatherService) {
+        this(Instant.now(), weatherService);
+    }
+
+    public void start() {
+        while (running) {
+            fetchWeatherUpdates();
+            sleepUninterruptibly(REQUEST_FREQUENCY);
+        }
+    }
+
+    private void fetchWeatherUpdates() {
+        Instant lastEvent = lastEventTime;
+        lastEventTime = Instant.now();
+        Request getEvents = new Request.Builder()
+                .get()
+                .url(weatherService.getSpec() + "/since=" + lastEvent.getEpochSecond())
+                .build();
+        WeatherMeasurement measurement;
+        try {
+            ResponseBody responseBody = client.newCall(getEvents)
+                                              .execute()
+                                              .body();
+            checkNotNull(responseBody);
+            String responseJson = responseBody.string();
+            measurement = WeatherMeasurement.fromJson(responseJson);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+        endpoint.receiveNew(measurement);
+    }
+
+    @Override
+    public void close() throws Exception {
+        running = false;
+        endpoint.close();
+    }
+}
