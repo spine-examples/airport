@@ -18,23 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id 'java'
-    id 'net.ltgt.errorprone' version '1.1.1'
-}
+package io.spine.example.weather;
 
-dependencies {
-    errorprone deps.build.errorProneCore
-    errorproneJavac deps.build.errorProneJavac
+import java.time.Instant;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-    implementation (
-            'com.google.code.gson:gson:2.8.6',
-            'com.sparkjava:spark-core:2.8.0',
-            deps.build.guava,
-            deps.build.flogger,
-            deps.build.jsr305Annotations,
-            deps.build.checkerAnnotations,
-            deps.build.errorProneAnnotations,
-    )
-    runtimeOnly deps.runtime.floggerSystemBackend
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static java.util.Collections.synchronizedSortedSet;
+
+public final class MeasurementRepository {
+
+    private final SortedSet<Measurement> measurements = synchronizedSortedSet(new TreeSet<>());
+
+    public Measurements between(Instant startTime, Instant endTime) {
+        checkNotNull(startTime);
+        checkNotNull(endTime);
+
+        return new Measurements(measurements.stream()
+                                            .filter(m -> m.isIn(startTime, endTime))
+                                            .collect(toImmutableList()));
+    }
+
+    public void store(Measurement measurement) {
+        checkNotNull(measurement);
+
+        measurements.add(measurement);
+    }
 }

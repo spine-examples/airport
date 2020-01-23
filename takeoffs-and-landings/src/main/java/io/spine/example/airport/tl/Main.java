@@ -32,7 +32,7 @@ final class Main {
     private static final int PORT = 8484;
     private static final Url WEATHER_SERVICE = Url
             .newBuilder()
-            .setSpec("https://weather.example.spine.io")
+            .setSpec("http://localhost:4242")
             .build();
 
     /**

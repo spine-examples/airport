@@ -18,23 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id 'java'
-    id 'net.ltgt.errorprone' version '1.1.1'
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.example.weather;
 
-dependencies {
-    errorprone deps.build.errorProneCore
-    errorproneJavac deps.build.errorProneJavac
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    implementation (
-            'com.google.code.gson:gson:2.8.6',
-            'com.sparkjava:spark-core:2.8.0',
-            deps.build.guava,
-            deps.build.flogger,
-            deps.build.jsr305Annotations,
-            deps.build.checkerAnnotations,
-            deps.build.errorProneAnnotations,
-    )
-    runtimeOnly deps.runtime.floggerSystemBackend
-}
+import javax.annotation.ParametersAreNonnullByDefault;
