@@ -20,29 +20,36 @@
 
 package io.spine.example.airport.tl;
 
-import io.spine.server.BoundedContext;
+import io.spine.example.airport.tl.weather.WeatherUpdateClient;
+import io.spine.net.Url;
 import io.spine.server.BoundedContextBuilder;
-import io.spine.server.ServerEnvironment;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
-import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
+import io.spine.server.Server;
 
-final class TakeoffsAndLandings {
+import static java.util.concurrent.ForkJoinPool.commonPool;
 
-    static final String CONTEXT_NAME = "Takeoffs and Landings";
+final class Main {
+
+    private static final int PORT = 8484;
+    private static final Url WEATHER_SERVICE = Url
+            .newBuilder()
+            .setSpec("https://weather.example.spine.io")
+            .build();
 
     /**
      * Prevents the utility class instantiation.
      */
-    private TakeoffsAndLandings() {
+    private Main() {
     }
 
-    static BoundedContextBuilder buildContext() {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
-
-        return BoundedContext
-                .singleTenant(CONTEXT_NAME)
-                .add(FlightAggregate.class);
+    public static void main(String[] args) throws Exception {
+        BoundedContextBuilder context = TakeoffsAndLandings.buildContext();
+        Server server = Server.atPort(PORT)
+                              .add(context)
+                              .build();
+        server.start();
+        WeatherUpdateClient weatherClient = new WeatherUpdateClient(WEATHER_SERVICE);
+        commonPool().execute(weatherClient::start);
+        server.awaitTermination();
+        weatherClient.close();
     }
 }

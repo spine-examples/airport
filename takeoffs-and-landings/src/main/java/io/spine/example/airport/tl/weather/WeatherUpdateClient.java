@@ -20,6 +20,7 @@
 
 package io.spine.example.airport.tl.weather;
 
+import io.spine.logging.Logging;
 import io.spine.net.Url;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -31,9 +32,8 @@ import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
-public class WeatherUpdateClient implements AutoCloseable {
+public class WeatherUpdateClient implements AutoCloseable, Logging {
 
     private static final Duration REQUEST_FREQUENCY = Duration.ofSeconds(5);
     private final OkHttpClient client = new OkHttpClient();
@@ -63,20 +63,21 @@ public class WeatherUpdateClient implements AutoCloseable {
         lastEventTime = Instant.now();
         Request getEvents = new Request.Builder()
                 .get()
-                .url(weatherService.getSpec() + "/since=" + lastEvent.getEpochSecond())
+                .url(weatherService.getSpec() + "/events?since=" + lastEvent.getEpochSecond())
                 .build();
-        WeatherMeasurement measurement;
         try {
             ResponseBody responseBody = client.newCall(getEvents)
                                               .execute()
                                               .body();
             checkNotNull(responseBody);
             String responseJson = responseBody.string();
-            measurement = WeatherMeasurement.fromJson(responseJson);
+            WeatherMeasurement measurement = WeatherMeasurement.fromJson(responseJson);
+            endpoint.receiveNew(measurement);
         } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
+            logger().atSevere()
+                    .withCause(e)
+                    .log();
         }
-        endpoint.receiveNew(measurement);
     }
 
     @Override
