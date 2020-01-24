@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package spine.example.airport.security;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.security";
+option java_outer_classname = "SecurityProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "spine/time_options.proto";
+import "spine/example/airport/tl/flight.proto";
+
+message TsaPassengers {
+    repeated TsaPassenger passenger = 1;
+}
+
+message TsaPassenger {
+
+    string id = 1 [(required) = true];
+    string fullName = 2;
+    string flightNumber = 3;
+    Status status = 4 [(required) = true];
+    google.protobuf.Timestamp encounteredAt = 5 [(required) = true, (when).in = PAST];
+
+    enum Status {
+
+        TPS_UNKNOWN = 0;
+        NOT_ATTEMPTED = 1;
+        PASSED = 2;
+        DENIEd = 3;
+        DETAINED = 4;
+    }
+}
+
+message PassengerId {
+
+    string value = 1 [(required) = true];
+}
+
+message Passenger {
+    option (entity).kind = PROJECTION;
+
+    PassengerId id = 1;
+
+    tl.FlightId flight = 2 [(required) = true, (validate) = true];
+
+    BoardingStatus status = 3;
+}
+
+enum BoardingStatus {
+
+    NOT_BOARDED = 0;
+    BOARDED = 1;
+    WILL_NOT_BE_BOARDED = 2;
+}

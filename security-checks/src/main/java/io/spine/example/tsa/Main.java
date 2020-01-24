@@ -18,38 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+package io.spine.example.tsa;
 
-package spine.example.airport.tl;
+import java.time.Instant;
 
-import "spine/options.proto";
+import static java.lang.Long.parseLong;
+import static java.time.Instant.ofEpochSecond;
+import static spark.Spark.get;
+import static spark.Spark.port;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.example.airport.tl";
-option java_outer_classname = "FlightProto";
-option java_multiple_files = true;
+final class Main {
 
-import "spine/example/airport/tl/airport.proto";
-import "spine/time/time.proto";
+    private static final int PORT = 8282;
 
-message FlightId {
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Main() {
+    }
 
-    string uuid = 1 [(required) = true];
+    public static void main(String[] args) {
+        port(PORT);
+        PassengerRepository repository = new PassengerRepository();
+        get("/passenger", (request, response) -> {
+            String sinceParam = request.queryParams("since");
+            Instant since = ofEpochSecond(parseLong(sinceParam));
+
+            String uptoParam = request.queryParams("upto");
+            Instant upto = ofEpochSecond(parseLong(uptoParam));
+
+            return repository.all(since, upto);
+        });
+    }
 }
-
-message Flight {
-    option (entity).kind = AGGREGATE;
-
-    FlightId id = 1;
-
-    time.OffsetDateTime scheduled_departure = 2 [(required) = true, (validate) = true];
-    time.OffsetDateTime actual_departure = 3 [(required) = false, (validate) = true];
-
-    time.OffsetDateTime scheduled_arrival = 4 [(required) = true, (validate) = true];
-    time.OffsetDateTime actual_arrival = 5 [(required) = false, (validate) = true];
-
-    AirportCode from = 6 [(required) = true, (validate) = true];
-    AirportCode to = 7 [(required) = true, (validate) = true];
-}
-
-

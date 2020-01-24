@@ -18,38 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+package io.spine.example.airport.tl;
 
-package spine.example.airport.tl;
+public interface ApiClient extends AutoCloseable {
 
-import "spine/options.proto";
-
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.example.airport.tl";
-option java_outer_classname = "FlightProto";
-option java_multiple_files = true;
-
-import "spine/example/airport/tl/airport.proto";
-import "spine/time/time.proto";
-
-message FlightId {
-
-    string uuid = 1 [(required) = true];
+    void start();
 }
-
-message Flight {
-    option (entity).kind = AGGREGATE;
-
-    FlightId id = 1;
-
-    time.OffsetDateTime scheduled_departure = 2 [(required) = true, (validate) = true];
-    time.OffsetDateTime actual_departure = 3 [(required) = false, (validate) = true];
-
-    time.OffsetDateTime scheduled_arrival = 4 [(required) = true, (validate) = true];
-    time.OffsetDateTime actual_arrival = 5 [(required) = false, (validate) = true];
-
-    AirportCode from = 6 [(required) = true, (validate) = true];
-    AirportCode to = 7 [(required) = true, (validate) = true];
-}
-
-

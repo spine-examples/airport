@@ -20,6 +20,7 @@
 
 package io.spine.example.airport.tl.weather;
 
+import io.spine.example.airport.tl.ApiClient;
 import io.spine.logging.Logging;
 import io.spine.net.Url;
 import okhttp3.OkHttpClient;
@@ -33,7 +34,7 @@ import java.time.Instant;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
-public class WeatherUpdateClient implements AutoCloseable, Logging {
+public class WeatherUpdateClient implements ApiClient, Logging {
 
     private static final Duration REQUEST_FREQUENCY = Duration.ofSeconds(5);
     private final OkHttpClient client = new OkHttpClient();
@@ -51,6 +52,7 @@ public class WeatherUpdateClient implements AutoCloseable, Logging {
         this(Instant.now(), weatherService);
     }
 
+    @Override
     public void start() {
         while (running) {
             fetchWeatherUpdates();

@@ -18,38 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+package io.spine.example.tsa;
 
-package spine.example.airport.tl;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
 
-import "spine/options.proto";
+public final class Passengers {
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.example.airport.tl";
-option java_outer_classname = "FlightProto";
-option java_multiple_files = true;
+    private final ImmutableList<Passenger> passengers;
 
-import "spine/example/airport/tl/airport.proto";
-import "spine/time/time.proto";
+    public Passengers(Iterable<Passenger> passengers) {
+        this.passengers = ImmutableList.copyOf(passengers);
+    }
 
-message FlightId {
+    public ImmutableList<Passenger> passengers() {
+        return passengers;
+    }
 
-    string uuid = 1 [(required) = true];
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Passengers)) {
+            return false;
+        }
+        Passengers that = (Passengers) o;
+        return Objects.equal(passengers, that.passengers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(passengers);
+    }
 }
-
-message Flight {
-    option (entity).kind = AGGREGATE;
-
-    FlightId id = 1;
-
-    time.OffsetDateTime scheduled_departure = 2 [(required) = true, (validate) = true];
-    time.OffsetDateTime actual_departure = 3 [(required) = false, (validate) = true];
-
-    time.OffsetDateTime scheduled_arrival = 4 [(required) = true, (validate) = true];
-    time.OffsetDateTime actual_arrival = 5 [(required) = false, (validate) = true];
-
-    AirportCode from = 6 [(required) = true, (validate) = true];
-    AirportCode to = 7 [(required) = true, (validate) = true];
-}
-
-
