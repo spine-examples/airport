@@ -18,34 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id 'java'
-    id 'net.ltgt.errorprone' version '1.1.1'
-    id 'com.github.psxpaul.execfork' version '0.1.13'
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.example.airport.tl.supplies;
 
-dependencies {
-    errorprone deps.build.errorProneCore
-    errorproneJavac deps.build.errorProneJavac
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    implementation (
-            'com.google.code.gson:gson:2.8.6',
-            'com.sparkjava:spark-core:2.8.0',
-            deps.build.guava,
-            deps.build.flogger,
-            deps.build.jsr305Annotations,
-            deps.build.checkerAnnotations,
-            deps.build.errorProneAnnotations,
-    )
-    runtimeOnly deps.runtime.floggerSystemBackend
-}
-
-task run(type: com.github.psxpaul.task.JavaExecFork) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'io.spine.example.weather.Main'
-    waitForPort = 4242
-    killDescendants = false
-
-    standardOutput = "$buildDir/stdout.log"
-    errorOutput = "$buildDir/stderr.log"
-}
+import javax.annotation.ParametersAreNonnullByDefault;
