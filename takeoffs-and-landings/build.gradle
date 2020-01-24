@@ -1,12 +1,25 @@
 plugins {
     id 'io.spine.tools.gradle.bootstrap' version '1.4.0'
+    id 'application'
 }
 
-spine.enableJava().server()
+spine.enableJava {
+    server()
+    codegen.grpc = true
+}
 
 sourceCompatibility = 1.8
 
 dependencies {
-    implementation "io.grpc:grpc-netty-shaded:$deps.versions.grpc"
+    protobuf project(':airplane-supplies')
+    implementation deps.grpc.grpcNettyShaded
     implementation "com.squareup.okhttp3:okhttp:4.3.1"
+}
+
+application {
+    mainClassName = 'io.spine.example.airport.tl.Main'
+}
+
+run {
+    dependsOn ':weather:run', ':airplane-supplies:run'
 }

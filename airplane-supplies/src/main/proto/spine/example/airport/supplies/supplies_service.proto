@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package spine.example.airport.supplies;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.supplies";
+option java_outer_classname = "SuppliesServiceProto";
+option java_multiple_files = true;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+message Subscription {
+
+    string uuid = 1;
+    EventType event_type = 2;
+    google.protobuf.Timestamp starting_from = 3;
+}
+
+enum EventType {
+    ALL = 0;
+
+    PLANE_FUELED = 1;
+    ANTI_FROSTING_CHECK_COMPLETE = 2;
+    PREFLIGHT_CHECK_COMPLETE = 3;
+}
+
+message SuppliesEvent {
+
+    google.protobuf.Any payload = 1;
+
+    Subscription subscription = 2;
+
+    google.protobuf.Timestamp when_occurred = 3;
+}
+
+service SuppliesEventProducer {
+
+    rpc Subscribe(Subscription) returns (stream SuppliesEvent);
+}
