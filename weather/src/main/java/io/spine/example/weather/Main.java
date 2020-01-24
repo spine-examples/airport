@@ -63,7 +63,6 @@ final class Main {
                 repository.store(newMeasurement);
             }
         });
-
     }
 
     private static void setUpRequestHandler(MeasurementRepository repository) {
@@ -76,8 +75,9 @@ final class Main {
             Instant since = Instant.ofEpochSecond(epochSeconds);
             Instant upTo = Instant.now();
             Measurements measurements = repository.between(since, upTo);
-            log.atSevere().log("Found `%d` measurements between %s and %s.",
-                             measurements.measurements().size(), since, upTo);
+            log.atFine()
+               .log("Found `%d` measurements between %s and %s.",
+                    measurements.measurements().size(), since, upTo);
             return measurements;
         });
     }

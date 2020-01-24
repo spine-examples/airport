@@ -50,7 +50,7 @@ public final class MeteoLab {
 
         lastMeasurement = new Measurement(newWindSpeed, newWindDirection, newTemperature, now());
 
-        log.atSevere().log("New measurement taken. New weather: `%s`.", lastMeasurement);
+        log.atFine().log("New measurement taken. New weather: `%s`.", lastMeasurement);
 
         return lastMeasurement;
     }
