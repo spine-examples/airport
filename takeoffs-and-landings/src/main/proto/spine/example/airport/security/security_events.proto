@@ -28,7 +28,7 @@ message PassengerDeniedBoarding {
     tl.FlightId flight = 2 [(required) = true, (validate) = true];
 }
 
-message FlightBoarded {
+message BoardingComplete {
 
     tl.FlightId flight = 1 [(required) = true, (validate) = true];
 

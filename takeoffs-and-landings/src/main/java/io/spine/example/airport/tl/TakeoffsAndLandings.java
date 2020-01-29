@@ -20,7 +20,7 @@
 
 package io.spine.example.airport.tl;
 
-import io.spine.example.airport.tl.passengers.PassengerRepository;
+import io.spine.example.airport.tl.passengers.BoardingProcman;
 import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.ServerEnvironment;
@@ -45,6 +45,6 @@ final class TakeoffsAndLandings {
         return BoundedContext
                 .singleTenant(CONTEXT_NAME)
                 .add(FlightAggregate.class)
-                .add(new PassengerRepository());
+                .add(BoardingProcman.class);
     }
 }

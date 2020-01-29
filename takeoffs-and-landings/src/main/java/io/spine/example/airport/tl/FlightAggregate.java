@@ -20,16 +20,23 @@
 
 package io.spine.example.airport.tl;
 
+import com.google.protobuf.Timestamp;
+import io.spine.core.EventContext;
+import io.spine.example.airport.security.BoardingComplete;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import io.spine.server.event.React;
 import io.spine.server.model.Nothing;
 import io.spine.server.tuple.EitherOf2;
+import io.spine.time.LocalDateTime;
+import io.spine.time.LocalDateTimes;
 import io.spine.time.OffsetDateTime;
 import io.spine.time.OffsetDateTimes;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import static io.spine.server.tuple.EitherOf2.withA;
 import static io.spine.server.tuple.EitherOf2.withB;
@@ -91,6 +98,15 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
         }
     }
 
+    @React
+    FlightBoarded on(BoardingComplete event, EventContext context) {
+        return FlightBoarded
+                .newBuilder()
+                .setId(event.getFlight())
+                .setWhenBoarded(toLocalDateTime(context.getTimestamp()))
+                .vBuild();
+    }
+
     @Apply
     private void on(FlightScheduled event) {
         builder().setFrom(event.getFrom())
@@ -103,6 +119,11 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
     private void on(FlightRescheduled event) {
         builder().setScheduledDeparture(event.getScheduledDeparture())
                  .setScheduledArrival(event.getScheduledArrival());
+    }
+
+    @Apply
+    private void on(FlightBoarded event) {
+        builder().setWhenBoarded(event.getWhenBoarded());
     }
 
     private FlightRescheduled postpone(Duration forHowLong) {
@@ -122,5 +143,13 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
                 .setScheduledDeparture(newDeparture)
                 .setScheduledArrival(newArrival)
                 .vBuild();
+    }
+
+    private static LocalDateTime toLocalDateTime(Timestamp when) {
+        java.time.LocalDateTime time = java.time.LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(when.getSeconds(), when.getNanos()),
+                ZoneId.systemDefault()
+        );
+        return LocalDateTimes.of(time);
     }
 }

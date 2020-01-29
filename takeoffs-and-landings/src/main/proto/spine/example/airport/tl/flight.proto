@@ -50,6 +50,10 @@ message Flight {
 
     AirportCode from = 6 [(required) = true, (validate) = true];
     AirportCode to = 7 [(required) = true, (validate) = true];
+
+    time.LocalDateTime when_boarded = 8 [(required) = false, (validate) = true];
 }
+
+
 
 

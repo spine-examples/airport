@@ -51,3 +51,10 @@ message FlightRescheduled {
     time.OffsetDateTime scheduled_departure = 2 [(required) = true, (validate) = true];
     time.OffsetDateTime scheduled_arrival = 3 [(required) = true, (validate) = true];
 }
+
+message FlightBoarded {
+
+    FlightId id = 1;
+
+    time.LocalDateTime when_boarded = 2 [(required) = false, (validate) = true];
+}
