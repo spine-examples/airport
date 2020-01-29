@@ -58,7 +58,6 @@ final class Main {
         SecurityGate gate = new SecurityGate();
         commonPool().execute(() -> {
             while (true) {
-
                 repository.store(gate.registerNext());
             }
         });
