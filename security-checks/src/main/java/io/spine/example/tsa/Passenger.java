@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.Instant;
+import java.util.Random;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -122,7 +123,39 @@ public final class Passenger {
         NOT_ATTEMPTED,
         PASSED,
         DENIED,
-        DETAINED
+        DETAINED;
+
+        public static Status random() {
+            Status[] options = Status.values();
+            Random rand = new Random();
+            int index = rand.nextInt(options.length);
+            return options[index];
+        }
+    }
+
+    /**
+     * A builder for the {@code Passenger} instances.
+     */
+    @SuppressWarnings("SpellCheckingInspection")
+    public enum Nationality {
+
+        Altmer,
+        Argonian,
+        Bosmer,
+        Breton,
+        Dunmer,
+        Imperial,
+        Khajiit,
+        Nord,
+        Orsimer,
+        Redguard;
+
+        public static Nationality random() {
+            Nationality[] options = Nationality.values();
+            Random rand = new Random();
+            int index = rand.nextInt(options.length);
+            return options[index];
+        }
     }
 
     /**
@@ -134,9 +167,6 @@ public final class Passenger {
         return new Builder();
     }
 
-    /**
-     * A builder for the {@code Passenger} instances.
-     */
     public static final class Builder {
 
         private String id;

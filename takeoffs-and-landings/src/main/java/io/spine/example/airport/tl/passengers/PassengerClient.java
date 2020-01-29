@@ -74,7 +74,7 @@ public final class PassengerClient implements ApiClient, Logging {
         while (active) {
             Instant now = Instant.now();
             Instant anHourAgo = now.minus(ofHours(1));
-            String url = format("%s?since=%s&upto=%s",
+            String url = format("%s/passenger?since=%s&upto=%s",
                                 securityService.getSpec(),
                                 anHourAgo.getEpochSecond(),
                                 now.getEpochSecond());
@@ -86,8 +86,8 @@ public final class PassengerClient implements ApiClient, Logging {
                 List<TsaPassenger> passengers = fetchPassengers(request);
                 passengers.forEach(this::emitIfStatusKnown);
             } catch (IOException e) {
-                _severe().withCause(e)
-                         .log();
+                _warn().withCause(e)
+                       .log();
             }
             sleepUninterruptibly(HALF_A_MINUTE);
         }

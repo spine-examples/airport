@@ -18,33 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.example.airport.tl;
+package io.spine.example.airport.tl.passengers;
 
-import io.spine.example.airport.tl.passengers.PassengerRepository;
-import io.spine.server.BoundedContext;
-import io.spine.server.BoundedContextBuilder;
-import io.spine.server.ServerEnvironment;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
-import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
+import io.spine.example.airport.security.PassengerBoarded;
+import io.spine.example.airport.security.PassengerDeniedBoarding;
+import io.spine.server.projection.ProjectionRepository;
+import io.spine.server.route.EventRouting;
 
-final class TakeoffsAndLandings {
+import static io.spine.server.route.EventRoute.withId;
 
-    static final String CONTEXT_NAME = "Takeoffs and Landings";
+public final class PassengerRepository
+        extends ProjectionRepository<PassengerId, PassengerProjection, Passenger> {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private TakeoffsAndLandings() {
-    }
-
-    static BoundedContextBuilder buildContext() {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
-
-        return BoundedContext
-                .singleTenant(CONTEXT_NAME)
-                .add(FlightAggregate.class)
-                .add(new PassengerRepository());
+    @OverridingMethodsMustInvokeSuper
+    @Override
+    protected void setupEventRouting(EventRouting<PassengerId> routing) {
+        super.setupEventRouting(routing);
+        routing.route(PassengerBoarded.class, (message, context) -> withId(message.getId()))
+               .route(PassengerDeniedBoarding.class, (message, context) -> withId(message.getId()));
     }
 }

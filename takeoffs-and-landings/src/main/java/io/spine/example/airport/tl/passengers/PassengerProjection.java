@@ -18,33 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.example.airport.tl;
+package io.spine.example.airport.tl.passengers;
 
-import io.spine.example.airport.tl.passengers.PassengerRepository;
-import io.spine.server.BoundedContext;
-import io.spine.server.BoundedContextBuilder;
-import io.spine.server.ServerEnvironment;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
-import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
+import io.spine.core.Subscribe;
+import io.spine.example.airport.security.PassengerBoarded;
+import io.spine.example.airport.security.PassengerDeniedBoarding;
+import io.spine.server.projection.Projection;
 
-final class TakeoffsAndLandings {
+import static io.spine.example.airport.tl.passengers.BoardingStatus.BOARDED;
+import static io.spine.example.airport.tl.passengers.BoardingStatus.WILL_NOT_BE_BOARDED;
 
-    static final String CONTEXT_NAME = "Takeoffs and Landings";
+final class PassengerProjection extends Projection<PassengerId, Passenger, Passenger.Builder> {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private TakeoffsAndLandings() {
+    @Subscribe
+    void on(PassengerBoarded event) {
+        builder()
+                .setFlight(event.getFlight())
+                .setStatus(BOARDED);
     }
 
-    static BoundedContextBuilder buildContext() {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
-
-        return BoundedContext
-                .singleTenant(CONTEXT_NAME)
-                .add(FlightAggregate.class)
-                .add(new PassengerRepository());
+    @Subscribe
+    void on(PassengerDeniedBoarding event) {
+        builder()
+                .setFlight(event.getFlight())
+                .setStatus(WILL_NOT_BE_BOARDED);
     }
 }

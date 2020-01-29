@@ -24,6 +24,7 @@ import java.time.Instant;
 
 import static java.lang.Long.parseLong;
 import static java.time.Instant.ofEpochSecond;
+import static java.util.concurrent.ForkJoinPool.commonPool;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
@@ -40,6 +41,7 @@ final class Main {
     public static void main(String[] args) {
         port(PORT);
         PassengerRepository repository = new PassengerRepository();
+        generatePassengers(repository);
         get("/passenger", (request, response) -> {
             String sinceParam = request.queryParams("since");
             Instant since = ofEpochSecond(parseLong(sinceParam));
@@ -48,6 +50,17 @@ final class Main {
             Instant upto = ofEpochSecond(parseLong(uptoParam));
 
             return repository.all(since, upto);
+        });
+    }
+
+    @SuppressWarnings("InfiniteLoopStatement")
+    private static void generatePassengers(PassengerRepository repository) {
+        SecurityGate gate = new SecurityGate();
+        commonPool().execute(() -> {
+            while (true) {
+
+                repository.store(gate.registerNext());
+            }
         });
     }
 }
