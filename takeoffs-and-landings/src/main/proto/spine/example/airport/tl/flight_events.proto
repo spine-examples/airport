@@ -56,5 +56,19 @@ message FlightBoarded {
 
     FlightId id = 1;
 
-    time.LocalDateTime when_boarded = 2 [(required) = false, (validate) = true];
+    time.LocalDateTime when = 2 [(required) = false, (validate) = true];
+}
+
+message FlightDeparted {
+
+    FlightId id = 1;
+
+    time.OffsetDateTime when = 2 [(required) = false, (validate) = true];
+}
+
+message FlightArrived {
+
+    FlightId id = 1;
+
+    time.OffsetDateTime when = 2 [(required) = false, (validate) = true];
 }

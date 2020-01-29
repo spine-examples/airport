@@ -35,13 +35,14 @@ import io.spine.time.OffsetDateTime;
 import io.spine.time.OffsetDateTimes;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneId;
 
 import static io.spine.server.tuple.EitherOf2.withA;
 import static io.spine.server.tuple.EitherOf2.withB;
 import static io.spine.time.OffsetDateTimes.toJavaTime;
 import static java.lang.Math.abs;
+import static java.time.Instant.ofEpochSecond;
+import static java.time.LocalDateTime.ofInstant;
+import static java.time.ZoneId.systemDefault;
 
 final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> {
 
@@ -103,7 +104,7 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
         return FlightBoarded
                 .newBuilder()
                 .setId(event.getFlight())
-                .setWhenBoarded(toLocalDateTime(context.getTimestamp()))
+                .setWhen(toLocalDateTime(context.getTimestamp()))
                 .vBuild();
     }
 
@@ -123,7 +124,17 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
 
     @Apply
     private void on(FlightBoarded event) {
-        builder().setWhenBoarded(event.getWhenBoarded());
+        builder().setWhenBoarded(event.getWhen());
+    }
+
+    @Apply(allowImport = true)
+    private void on(FlightDeparted event) {
+        builder().setActualDeparture(event.getWhen());
+    }
+
+    @Apply(allowImport = true)
+    private void on(FlightArrived event) {
+        builder().setActualArrival(event.getWhen());
     }
 
     private FlightRescheduled postpone(Duration forHowLong) {
@@ -146,10 +157,9 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
     }
 
     private static LocalDateTime toLocalDateTime(Timestamp when) {
-        java.time.LocalDateTime time = java.time.LocalDateTime.ofInstant(
-                Instant.ofEpochSecond(when.getSeconds(), when.getNanos()),
-                ZoneId.systemDefault()
-        );
-        return LocalDateTimes.of(time);
+        return LocalDateTimes.of(ofInstant(
+                ofEpochSecond(when.getSeconds(), when.getNanos()),
+                systemDefault()
+        ));
     }
 }
