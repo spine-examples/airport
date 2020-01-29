@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 import io.spine.core.UserId;
 import io.spine.example.airport.security.PassengerBoarded;
 import io.spine.example.airport.security.PassengerDeniedBoarding;
-import io.spine.example.airport.tl.ApiClient;
+import io.spine.example.airport.tl.PollingClient;
 import io.spine.example.airport.tl.FlightId;
 import io.spine.logging.Logging;
 import io.spine.net.Url;
@@ -47,7 +47,7 @@ import static java.lang.String.format;
 import static java.time.Duration.ofHours;
 import static java.time.Duration.ofSeconds;
 
-public final class PassengerClient implements ApiClient, Logging {
+public final class PassengerClient implements PollingClient, Logging {
 
     private static final Duration HALF_A_MINUTE = ofSeconds(30);
     private static final UserId ACTOR = UserId

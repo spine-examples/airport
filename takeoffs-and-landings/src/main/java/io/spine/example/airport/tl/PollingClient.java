@@ -20,7 +20,7 @@
 
 package io.spine.example.airport.tl;
 
-public interface ApiClient extends AutoCloseable {
+public interface PollingClient extends AutoCloseable {
 
     void start();
 }

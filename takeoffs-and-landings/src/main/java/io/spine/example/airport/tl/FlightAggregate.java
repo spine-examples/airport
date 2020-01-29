@@ -36,7 +36,7 @@ import static io.spine.server.tuple.EitherOf2.withB;
 import static io.spine.time.OffsetDateTimes.toJavaTime;
 import static java.lang.Math.abs;
 
-class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> {
+final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> {
 
     private static final int WIND_DIRECTION_CHANGE_THRESHOLD = 30;
     private static final int TEMPERATURE_CHANGE_THRESHOLD = 30;
