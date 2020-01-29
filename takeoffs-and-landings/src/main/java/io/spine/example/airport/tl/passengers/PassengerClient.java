@@ -34,16 +34,20 @@ import okhttp3.Request;
 import okhttp3.ResponseBody;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.example.airport.tl.passengers.BoardingStatus.BOARDED;
 import static io.spine.example.airport.tl.passengers.BoardingStatus.WILL_NOT_BE_BOARDED;
 import static io.spine.server.integration.ThirdPartyContext.singleTenant;
 import static java.lang.String.format;
+import static java.time.Duration.ofSeconds;
 
 public final class PassengerClient implements ApiClient, Logging {
 
+    private static final Duration HALF_A_MINUTE = ofSeconds(30);
     private static final UserId ACTOR = UserId
             .newBuilder()
             .setValue("TSA")
@@ -73,6 +77,7 @@ public final class PassengerClient implements ApiClient, Logging {
             } catch (IOException e) {
                 _severe().withCause(e).log();
             }
+            sleepUninterruptibly(HALF_A_MINUTE);
         }
     }
 
@@ -124,10 +129,9 @@ public final class PassengerClient implements ApiClient, Logging {
                                   .execute()
                                   .body();
         checkNotNull(body);
-        String jsonResponse = body
-                .string();
-        return parser.fromJson(jsonResponse, TsaPassengers.class)
-                                              .getPassengerList();
+        String jsonResponse = body.string();
+        TsaPassengers passengers = parser.fromJson(jsonResponse, TsaPassengers.class);
+        return passengers.getPassengerList();
     }
 
     @Override
