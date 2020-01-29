@@ -18,32 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.example.tsa;
+package io.spine.example.airport.tl.passengers;
 
-import com.google.common.collect.ImmutableList;
+import static io.spine.example.airport.tl.passengers.BoardingStatus.BOARDED;
+import static io.spine.example.airport.tl.passengers.BoardingStatus.NOT_BOARDED;
+import static io.spine.example.airport.tl.passengers.BoardingStatus.WILL_NOT_BE_BOARDED;
 
-import java.time.Instant;
-import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedDeque;
+public interface TsaPassengerMixin extends TsaPassengerOrBuilder {
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
-final class PassengerRepository {
-
-    private final Deque<Passenger> passengers = new ConcurrentLinkedDeque<>();
-
-    Passengers all(Instant since, Instant upto) {
-        ImmutableList<Passenger> passengers = this.passengers
-                .stream()
-                .filter(p -> p.encounteredAt().isAfter(since)
-                          && p.encounteredAt().isBefore(upto))
-                .collect(toImmutableList());
-        return new Passengers(passengers);
-    }
-
-    void store(Passenger passenger) {
-        checkNotNull(passenger);
-        passengers.add(passenger);
+    default BoardingStatus boardingStatus() {
+        BoardingStatus status;
+        switch (this.getStatus()) {
+            case PASSED:
+                status = BOARDED;
+                break;
+            case DENIED: // Fallthrough intended.
+            case DETAINED:
+                status = WILL_NOT_BE_BOARDED;
+                break;
+            case NOT_ATTEMPTED:
+            case UNRECOGNIZED:
+            case TPS_UNKNOWN:
+            default:
+                status = NOT_BOARDED;
+        }
+        return status;
     }
 }

@@ -21,27 +21,42 @@
 package io.spine.example.airport.tl.passengers;
 
 import com.google.gson.Gson;
-import io.spine.example.airport.security.TsaPassengers;
+import io.spine.core.UserId;
+import io.spine.example.airport.security.PassengerBoarded;
+import io.spine.example.airport.security.PassengerDeniedBoarding;
 import io.spine.example.airport.tl.ApiClient;
+import io.spine.example.airport.tl.FlightId;
 import io.spine.logging.Logging;
 import io.spine.net.Url;
+import io.spine.server.integration.ThirdPartyContext;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.example.airport.tl.passengers.BoardingStatus.BOARDED;
+import static io.spine.example.airport.tl.passengers.BoardingStatus.WILL_NOT_BE_BOARDED;
+import static io.spine.server.integration.ThirdPartyContext.singleTenant;
 import static java.lang.String.format;
 
 public final class PassengerClient implements ApiClient, Logging {
 
+    private static final UserId ACTOR = UserId
+            .newBuilder()
+            .setValue("TSA")
+            .build();
+
     private final Url securityService;
     private final OkHttpClient client = new OkHttpClient();
     private final Gson parser = new Gson();
+    private final ThirdPartyContext securityContext;
 
     public PassengerClient(Url service) {
         this.securityService = checkNotNull(service);
+        this.securityContext = singleTenant("Security");
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
@@ -52,23 +67,71 @@ public final class PassengerClient implements ApiClient, Logging {
                     .get()
                     .url(format("%s?since=%s&upto=%s", securityService.getSpec(), "", ""))
                     .build();
-            ResponseBody body;
             try {
-                body = client.newCall(request)
-                             .execute()
-                             .body();
-                checkNotNull(body);
-                String jsonResponse = body
-                        .string();
-                parser.fromJson(jsonResponse, TsaPassengers.class);
+                List<TsaPassenger> passengers = fetchPassengers(request);
+                passengers.forEach(this::emitIfStatusKnown);
             } catch (IOException e) {
                 _severe().withCause(e).log();
             }
         }
     }
 
+    private void emitIfStatusKnown(TsaPassenger tsaPassenger) {
+        BoardingStatus status = tsaPassenger.boardingStatus();
+        if (status == BOARDED) {
+            emitBoarded(tsaPassenger);
+        } else if (status == WILL_NOT_BE_BOARDED) {
+            emitDenied(tsaPassenger);
+        }
+    }
+
+    private void emitDenied(TsaPassenger tsaPassenger) {
+        PassengerId id = PassengerId
+                .newBuilder()
+                .setValue(tsaPassenger.getId())
+                .build();
+        FlightId flight = FlightId
+                .newBuilder()
+                .setUuid(tsaPassenger.getFlightNumber())
+                .build();
+        PassengerDeniedBoarding event = PassengerDeniedBoarding
+                .newBuilder()
+                .setId(id)
+                .setFlight(flight)
+                .vBuild();
+        securityContext.emittedEvent(event, ACTOR);
+    }
+
+    private void emitBoarded(TsaPassenger tsaPassenger) {
+        PassengerId id = PassengerId
+                .newBuilder()
+                .setValue(tsaPassenger.getId())
+                .build();
+        FlightId flight = FlightId
+                .newBuilder()
+                .setUuid(tsaPassenger.getFlightNumber())
+                .build();
+        PassengerBoarded event = PassengerBoarded
+                .newBuilder()
+                .setId(id)
+                .setFlight(flight)
+                .vBuild();
+        securityContext.emittedEvent(event, ACTOR);
+    }
+
+    private List<TsaPassenger> fetchPassengers(Request request) throws IOException {
+        ResponseBody body = client.newCall(request)
+                                  .execute()
+                                  .body();
+        checkNotNull(body);
+        String jsonResponse = body
+                .string();
+        return parser.fromJson(jsonResponse, TsaPassengers.class)
+                                              .getPassengerList();
+    }
+
     @Override
     public void close() throws Exception {
-
+        securityContext.close();
     }
 }
