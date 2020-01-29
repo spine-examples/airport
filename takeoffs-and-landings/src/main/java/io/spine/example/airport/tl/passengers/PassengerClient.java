@@ -35,6 +35,7 @@ import okhttp3.ResponseBody;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -43,6 +44,7 @@ import static io.spine.example.airport.tl.passengers.BoardingStatus.BOARDED;
 import static io.spine.example.airport.tl.passengers.BoardingStatus.WILL_NOT_BE_BOARDED;
 import static io.spine.server.integration.ThirdPartyContext.singleTenant;
 import static java.lang.String.format;
+import static java.time.Duration.ofHours;
 import static java.time.Duration.ofSeconds;
 
 public final class PassengerClient implements ApiClient, Logging {
@@ -54,28 +56,38 @@ public final class PassengerClient implements ApiClient, Logging {
             .build();
 
     private final Url securityService;
-    private final OkHttpClient client = new OkHttpClient();
-    private final Gson parser = new Gson();
+    private final OkHttpClient client;
+    private final Gson parser;
     private final ThirdPartyContext securityContext;
+    private volatile boolean active;
 
     public PassengerClient(Url service) {
         this.securityService = checkNotNull(service);
         this.securityContext = singleTenant("Security");
+        this.client = new OkHttpClient();
+        this.parser = new Gson();
+        this.active = true;
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void start() {
-        while (true) {
+        while (active) {
+            Instant now = Instant.now();
+            Instant anHourAgo = now.minus(ofHours(1));
+            String url = format("%s?since=%s&upto=%s",
+                                securityService.getSpec(),
+                                anHourAgo.getEpochSecond(),
+                                now.getEpochSecond());
             Request request = new Request.Builder()
                     .get()
-                    .url(format("%s?since=%s&upto=%s", securityService.getSpec(), "", ""))
+                    .url(url)
                     .build();
             try {
                 List<TsaPassenger> passengers = fetchPassengers(request);
                 passengers.forEach(this::emitIfStatusKnown);
             } catch (IOException e) {
-                _severe().withCause(e).log();
+                _severe().withCause(e)
+                         .log();
             }
             sleepUninterruptibly(HALF_A_MINUTE);
         }
@@ -136,6 +148,7 @@ public final class PassengerClient implements ApiClient, Logging {
 
     @Override
     public void close() throws Exception {
+        active = false;
         securityContext.close();
     }
 }

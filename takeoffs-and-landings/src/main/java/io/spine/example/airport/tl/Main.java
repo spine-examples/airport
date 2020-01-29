@@ -22,12 +22,12 @@ package io.spine.example.airport.tl;
 
 import io.grpc.ManagedChannel;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+import io.spine.example.airport.tl.passengers.PassengerClient;
 import io.spine.example.airport.tl.supplies.SuppliesEventConsumer;
 import io.spine.example.airport.tl.weather.WeatherUpdateClient;
 import io.spine.net.Url;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.Server;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.concurrent.ForkJoinPool.commonPool;
 
@@ -37,6 +37,10 @@ final class Main {
     private static final Url WEATHER_SERVICE = Url
             .newBuilder()
             .setSpec("http://localhost:4242")
+            .build();
+    private static final Url SECURITY_SERVICE = Url
+            .newBuilder()
+            .setSpec("http://localhost:8282")
             .build();
     private static final int SUPPLIES_PORT = 4545;
 
@@ -54,10 +58,12 @@ final class Main {
         server.start();
         WeatherUpdateClient weatherClient = connectToWeather();
         SuppliesEventConsumer suppliesEventConsumer = connectToSupplies();
+        PassengerClient passengerClient = connectToSecurity();
 
         server.awaitTermination();
         weatherClient.close();
         suppliesEventConsumer.close();
+        passengerClient.close();
     }
 
     private static SuppliesEventConsumer connectToSupplies() {
@@ -71,10 +77,15 @@ final class Main {
         return consumer;
     }
 
-    @NotNull
     private static WeatherUpdateClient connectToWeather() {
         WeatherUpdateClient weatherClient = new WeatherUpdateClient(WEATHER_SERVICE);
         commonPool().execute(weatherClient::start);
         return weatherClient;
+    }
+
+    private static PassengerClient connectToSecurity() {
+        PassengerClient passengerClient = new PassengerClient(SECURITY_SERVICE);
+        commonPool().execute(passengerClient::start);
+        return passengerClient;
     }
 }
