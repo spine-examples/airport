@@ -20,31 +20,16 @@
 
 package io.spine.example.airport.tl;
 
-import io.spine.example.airport.tl.passengers.BoardingProcman;
-import io.spine.server.BoundedContext;
-import io.spine.server.ServerEnvironment;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
-import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
+import io.spine.server.aggregate.AggregateRepository;
+import io.spine.server.route.EventRouting;
 
-final class TakeoffsAndLandings {
+import static io.spine.server.route.EventRoute.withId;
 
-    static final String CONTEXT_NAME = "Takeoffs and Landings";
+public class FlightRepository extends AggregateRepository<FlightId, FlightAggregate> {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private TakeoffsAndLandings() {
-    }
-
-    static BoundedContext buildContext() {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
-
-        return BoundedContext
-                .singleTenant(CONTEXT_NAME)
-                .add(new FlightRepository())
-                .add(BoardingProcman.class)
-                .build();
+    @Override
+    protected void setupImportRouting(EventRouting<FlightId> routing) {
+        routing.route(FlightDeparted.class, (message, context) -> withId(message.getId()))
+               .route(FlightArrived.class, (message, context) -> withId(message.getId()));
     }
 }
