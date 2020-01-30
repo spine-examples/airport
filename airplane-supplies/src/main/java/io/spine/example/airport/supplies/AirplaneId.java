@@ -23,14 +23,20 @@ package io.spine.example.airport.supplies;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+import java.util.UUID;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class AircraftId {
+public final class AirplaneId {
 
-    public final String uuid;
+    private final String uuid;
 
-    public AircraftId(String uuid) {
+    public AirplaneId(String uuid) {
         this.uuid = checkNotNull(uuid);
+    }
+
+    public static AirplaneId newId() {
+        return new AirplaneId(UUID.randomUUID().toString());
     }
 
     public String uuid() {
@@ -42,10 +48,10 @@ public final class AircraftId {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AircraftId)) {
+        if (!(o instanceof AirplaneId)) {
             return false;
         }
-        AircraftId id = (AircraftId) o;
+        AirplaneId id = (AirplaneId) o;
         return Objects.equal(uuid, id.uuid);
     }
 

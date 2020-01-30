@@ -28,12 +28,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class PlaneSupplies {
 
-    private final AircraftId id;
+    private final AirplaneId id;
     private final @kg long fuelMass;
     private final Instant whenFueled;
     private final Instant whenFrostChecked;
-    private final Instant whePreFlightCheckStarted;
-    private final Instant whePreFlightCheckComplete;
+    private final Instant whenPreFlightCheckComplete;
     private final boolean preFlightCheckSuccessful;
 
     private PlaneSupplies(Builder builder) {
@@ -41,12 +40,11 @@ public final class PlaneSupplies {
         this.fuelMass = builder.fuelMass;
         this.whenFueled = builder.whenFueled;
         this.whenFrostChecked = builder.whenFrostChecked;
-        this.whePreFlightCheckStarted = builder.whePreFlightCheckStarted;
-        this.whePreFlightCheckComplete = builder.whePreFlightCheckComplete;
+        this.whenPreFlightCheckComplete = builder.whenPreFlightCheckComplete;
         this.preFlightCheckSuccessful = builder.preFlightCheckSuccessful;
     }
 
-    public AircraftId id() {
+    public AirplaneId id() {
         return id;
     }
 
@@ -62,12 +60,8 @@ public final class PlaneSupplies {
         return whenFrostChecked;
     }
 
-    public Instant whePreFlightCheckStarted() {
-        return whePreFlightCheckStarted;
-    }
-
-    public Instant whePreFlightCheckComplete() {
-        return whePreFlightCheckComplete;
+    public Instant whenPreFlightCheckComplete() {
+        return whenPreFlightCheckComplete;
     }
 
     public boolean preFlightCheckSuccessful() {
@@ -88,12 +82,11 @@ public final class PlaneSupplies {
      */
     public static final class Builder {
 
-        private AircraftId id;
+        private AirplaneId id;
         private @kg long fuelMass;
         private Instant whenFueled;
         private Instant whenFrostChecked;
-        private Instant whePreFlightCheckStarted;
-        private Instant whePreFlightCheckComplete;
+        private Instant whenPreFlightCheckComplete;
         private boolean preFlightCheckSuccessful;
 
         /**
@@ -102,7 +95,7 @@ public final class PlaneSupplies {
         private Builder() {
         }
 
-        public Builder setId(AircraftId id) {
+        public Builder setId(AirplaneId id) {
             this.id = checkNotNull(id);
             return this;
         }
@@ -122,13 +115,8 @@ public final class PlaneSupplies {
             return this;
         }
 
-        public Builder setWhePreFlightCheckStarted(Instant whePreFlightCheckStarted) {
-            this.whePreFlightCheckStarted = checkNotNull(whePreFlightCheckStarted);
-            return this;
-        }
-
-        public Builder setWhePreFlightCheckComplete(Instant whePreFlightCheckComplete) {
-            this.whePreFlightCheckComplete = checkNotNull(whePreFlightCheckComplete);
+        public Builder setWhenPreFlightCheckComplete(Instant whenPreFlightCheckComplete) {
+            this.whenPreFlightCheckComplete = checkNotNull(whenPreFlightCheckComplete);
             return this;
         }
 
