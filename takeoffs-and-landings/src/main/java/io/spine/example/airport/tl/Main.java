@@ -26,8 +26,11 @@ import io.spine.example.airport.tl.passengers.PassengerClient;
 import io.spine.example.airport.tl.supplies.SuppliesEventConsumer;
 import io.spine.example.airport.tl.weather.WeatherUpdateClient;
 import io.spine.net.Url;
-import io.spine.server.BoundedContextBuilder;
-import io.spine.server.Server;
+import io.spine.server.BoundedContext;
+import io.spine.server.CommandService;
+import io.spine.server.GrpcContainer;
+import io.spine.server.QueryService;
+import io.spine.server.SubscriptionService;
 
 import static java.util.concurrent.ForkJoinPool.commonPool;
 
@@ -51,19 +54,25 @@ final class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        BoundedContextBuilder context = TakeoffsAndLandings.buildContext();
-        Server server = Server.atPort(PORT)
-                              .add(context)
-                              .build();
-        server.start();
+        BoundedContext context = TakeoffsAndLandings.buildContext();
+        QueryService queryService = queryService(context);
+        GrpcContainer container = GrpcContainer
+                .atPort(PORT)
+                .addService(queryService)
+                .addService(commandService(context))
+                .addService(subscriptionService(context))
+                .build();
+        container.start();
         WeatherUpdateClient weatherClient = connectToWeather();
         SuppliesEventConsumer suppliesEventConsumer = connectToSupplies();
         PassengerClient passengerClient = connectToSecurity();
+        Tower tower = connectToTower(context, queryService);
 
-        server.awaitTermination();
+        container.awaitTermination();
         weatherClient.close();
         suppliesEventConsumer.close();
         passengerClient.close();
+        tower.close();
     }
 
     private static SuppliesEventConsumer connectToSupplies() {
@@ -79,13 +88,49 @@ final class Main {
 
     private static WeatherUpdateClient connectToWeather() {
         WeatherUpdateClient weatherClient = new WeatherUpdateClient(WEATHER_SERVICE);
-        commonPool().execute(weatherClient::start);
+        start(weatherClient);
         return weatherClient;
     }
 
     private static PassengerClient connectToSecurity() {
         PassengerClient passengerClient = new PassengerClient(SECURITY_SERVICE);
-        commonPool().execute(passengerClient::start);
+        start(passengerClient);
         return passengerClient;
+    }
+
+    private static Tower connectToTower(BoundedContext context,
+                                        QueryService queryService) {
+        AirportCode code = AirportCode
+                .newBuilder()
+                .setCode("HRK")
+                .build();
+        Tower tower = new Tower(context.importBus(), queryService, code);
+        start(tower);
+        return tower;
+    }
+
+    private static void start(PollingClient passengerClient) {
+        commonPool().execute(passengerClient::start);
+    }
+
+    private static SubscriptionService subscriptionService(BoundedContext context) {
+        return SubscriptionService
+                .newBuilder()
+                .add(context)
+                .build();
+    }
+
+    private static CommandService commandService(BoundedContext context) {
+        return CommandService
+                .newBuilder()
+                .add(context)
+                .build();
+    }
+
+    private static QueryService queryService(BoundedContext context) {
+        return QueryService
+                .newBuilder()
+                .add(context)
+                .build();
     }
 }

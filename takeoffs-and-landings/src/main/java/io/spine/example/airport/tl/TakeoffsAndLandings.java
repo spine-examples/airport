@@ -22,7 +22,6 @@ package io.spine.example.airport.tl;
 
 import io.spine.example.airport.tl.passengers.BoardingProcman;
 import io.spine.server.BoundedContext;
-import io.spine.server.BoundedContextBuilder;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
@@ -37,7 +36,7 @@ final class TakeoffsAndLandings {
     private TakeoffsAndLandings() {
     }
 
-    static BoundedContextBuilder buildContext() {
+    static BoundedContext buildContext() {
         ServerEnvironment env = ServerEnvironment.instance();
         env.configureStorage(InMemoryStorageFactory.newInstance());
         env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
@@ -45,6 +44,7 @@ final class TakeoffsAndLandings {
         return BoundedContext
                 .singleTenant(CONTEXT_NAME)
                 .add(FlightAggregate.class)
-                .add(BoardingProcman.class);
+                .add(BoardingProcman.class)
+                .build();
     }
 }
