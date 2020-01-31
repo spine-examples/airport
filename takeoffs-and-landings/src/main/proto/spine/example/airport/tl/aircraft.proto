@@ -46,7 +46,3 @@ message Aircraft {
     bool defrosted = 3;
     bool checked = 4;
 }
-
-
-
-
