@@ -17,6 +17,8 @@ message TsaPassengers {
     repeated TsaPassenger passenger = 1;
 }
 
+// A passenger, as seen by the `Security Checks` context.
+//
 message TsaPassenger {
     option (is).java_type = "TsaPassengerMixin";
 
@@ -41,6 +43,7 @@ message PassengerId {
     string value = 1 [(required) = true];
 }
 
+// State of the precess of boarding a plane.
 message Boarding {
     option (entity).kind = PROCESS_MANAGER;
 

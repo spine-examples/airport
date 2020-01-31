@@ -25,7 +25,7 @@ import static io.spine.example.airport.tl.passengers.BoardingStatus.NOT_BOARDED;
 import static io.spine.example.airport.tl.passengers.BoardingStatus.WILL_NOT_BE_BOARDED;
 
 /**
- * A passenger, as seen by the {@code Security Checks} context.
+ * An interface for the {@code TsaPassenger}.
  */
 public interface TsaPassengerMixin extends TsaPassengerOrBuilder {
 
