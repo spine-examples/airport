@@ -28,7 +28,6 @@ import io.spine.server.event.React;
 import io.spine.server.model.Nothing;
 import io.spine.server.procman.ProcessManager;
 import io.spine.server.tuple.EitherOf2;
-import org.jetbrains.annotations.NotNull;
 
 import static io.spine.server.tuple.EitherOf2.withA;
 import static io.spine.server.tuple.EitherOf2.withB;
@@ -49,7 +48,6 @@ public class BoardingProcman extends ProcessManager<FlightId, Boarding, Boarding
         return completeOrNothing();
     }
 
-    @NotNull
     private EitherOf2<BoardingComplete, Nothing> completeOrNothing() {
         int headCount = builder().getBoardedCount();
         int passengerCount = headCount + builder().getWillNotBeBoardedCount();
