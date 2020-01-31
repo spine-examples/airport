@@ -29,15 +29,21 @@ import io.spine.server.integration.ThirdPartyContext;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An adapter which publishes weather updates as domain events.
+ */
 public final class WeatherUpdateEndpoint implements AutoCloseable {
 
     private static final UserId actor = UserId
             .newBuilder()
-            .setValue("M-42")
+            .setValue("Meteolab M-42")
             .build();
     private final ThirdPartyContext weatherContext = ThirdPartyContext.singleTenant("Weather");
     private WeatherMeasurement previous = WeatherMeasurement.unknown();
 
+    /**
+     * Publishes the given measurement as weather update events.
+     */
     public void receiveNew(WeatherMeasurement measurement) {
         checkNotNull(measurement);
         if (!previous.isUnknown()) {

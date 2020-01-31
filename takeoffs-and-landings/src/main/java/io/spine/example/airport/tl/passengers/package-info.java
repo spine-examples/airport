@@ -18,6 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Contains types for integrating the {@code Takeoffs and Landings} Bounded Context with
+ * the {@code Security Checks} system.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.example.airport.tl.passengers;

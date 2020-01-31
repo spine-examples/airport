@@ -37,6 +37,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static java.util.concurrent.ForkJoinPool.commonPool;
 
+/**
+ * A client of the {@code Airplane Supplies} context.
+ *
+ * <p>Receives the events published by the {@code Airplane Supplies} and broadcasts them into
+ * the {@code Takeoffs and Landings} context.
+ */
 public final class SuppliesEventConsumer implements AutoCloseable {
 
     private static final String CONTEXT_NAME = "Airplane Supplies";
@@ -67,6 +73,12 @@ public final class SuppliesEventConsumer implements AutoCloseable {
         context.close();
     }
 
+    /**
+     * Observer of a {@link SuppliesEvent}s stream.
+     *
+     * <p>When the stream ends either via being completed or with an error, restarts
+     * the subscription.
+     */
     private final class Observer implements StreamObserver<SuppliesEvent>, Logging {
 
         private final Subscription subscription;

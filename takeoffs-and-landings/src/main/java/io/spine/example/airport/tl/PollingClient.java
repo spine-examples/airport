@@ -20,7 +20,14 @@
 
 package io.spine.example.airport.tl;
 
+/**
+ * A client which runs indefinitely pulling data from an external API.
+ */
 public interface PollingClient extends AutoCloseable {
 
+    /**
+     * Pulls data from an external API and publishes it into the system in the form of domain
+     * events.
+     */
     void start();
 }

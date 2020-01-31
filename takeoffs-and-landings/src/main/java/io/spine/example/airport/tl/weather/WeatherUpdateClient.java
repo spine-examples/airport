@@ -34,6 +34,11 @@ import java.time.Instant;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
+/**
+ * A client of the {@code Weather} monitoring system.
+ *
+ * <p>Pulls and publishes the weather updates into the system.
+ */
 public class WeatherUpdateClient implements PollingClient, Logging {
 
     private static final Duration REQUEST_FREQUENCY = Duration.ofSeconds(5);

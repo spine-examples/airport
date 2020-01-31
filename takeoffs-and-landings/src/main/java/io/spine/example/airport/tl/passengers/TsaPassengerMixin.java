@@ -24,8 +24,15 @@ import static io.spine.example.airport.tl.passengers.BoardingStatus.BOARDED;
 import static io.spine.example.airport.tl.passengers.BoardingStatus.NOT_BOARDED;
 import static io.spine.example.airport.tl.passengers.BoardingStatus.WILL_NOT_BE_BOARDED;
 
+/**
+ * A passenger, as seen by the {@code Security Checks} context.
+ */
 public interface TsaPassengerMixin extends TsaPassengerOrBuilder {
 
+    /**
+     * Obtains the {@link BoardingStatus} of the passenger based on their
+     * {@linkplain #getStatus() security status}.
+     */
     default BoardingStatus boardingStatus() {
         BoardingStatus status;
         switch (this.getStatus()) {

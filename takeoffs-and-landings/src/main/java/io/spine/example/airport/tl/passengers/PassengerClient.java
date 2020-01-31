@@ -47,6 +47,11 @@ import static java.lang.String.format;
 import static java.time.Duration.ofHours;
 import static java.time.Duration.ofSeconds;
 
+/**
+ * A client of the {@code Security Checks} system.
+ *
+ * <p>Pulls the data about passengers who have passed the security check.
+ */
 public final class PassengerClient implements PollingClient, Logging {
 
     private static final Duration HALF_A_MINUTE = ofSeconds(30);

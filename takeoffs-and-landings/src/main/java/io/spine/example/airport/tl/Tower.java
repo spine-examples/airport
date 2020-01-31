@@ -48,6 +48,11 @@ import static java.time.Duration.ofMinutes;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * The dispatchers' tower.
+ *
+ * <p>Imports events about flights in the air via the {@link ImportBus}.
+ */
 public final class Tower implements PollingClient {
 
     private final ImportBus importBus;
