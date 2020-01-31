@@ -20,32 +20,27 @@
 
 package io.spine.example.airport.tl;
 
-import io.spine.example.airport.tl.passengers.BoardingProcman;
-import io.spine.server.BoundedContext;
-import io.spine.server.ServerEnvironment;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
-import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
+import io.spine.example.airport.supplies.PreflightCheckComplete;
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
+import io.spine.server.event.React;
 
-final class TakeoffsAndLandings {
+final class AircraftAggregate extends Aggregate<AircraftId, Aircraft, Aircraft.Builder> {
 
-    static final String CONTEXT_NAME = "Takeoffs and Landings";
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private TakeoffsAndLandings() {
+    @React(external = true)
+    AircraftPreparedForFlight on(PreflightCheckComplete event) {
+        return AircraftPreparedForFlight
+                .newBuilder()
+                .setId(id())
+                .vBuild();
     }
 
-    static BoundedContext buildContext() {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
-
-        return BoundedContext
-                .singleTenant(CONTEXT_NAME)
-                .add(new FlightRepository())
-                .add(new AircraftRepository())
-                .add(BoardingProcman.class)
-                .build();
+    @Apply
+    private void on(AircraftPreparedForFlight event) {
+        builder()
+                .setId(event.getId())
+                .setChecked(true)
+                .setFueled(true)
+                .setDefrosted(true);
     }
 }

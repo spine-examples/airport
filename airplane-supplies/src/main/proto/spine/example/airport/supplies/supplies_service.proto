@@ -27,20 +27,6 @@ enum EventType {
     PREFLIGHT_CHECK_COMPLETE = 3;
 }
 
-message PlaneFueled {
-
-    string plane_id = 1;
-    double fuel_mass = 2;
-}
-
-message AntiFrostingCheckComplete {
-    string plane_id = 1;
-}
-
-message PreflightCheckComplete {
-    string plane_id = 1;
-}
-
 message SuppliesEvent {
 
     google.protobuf.Any payload = 1;

@@ -20,32 +20,26 @@
 
 package io.spine.example.airport.tl;
 
-import io.spine.example.airport.tl.passengers.BoardingProcman;
-import io.spine.server.BoundedContext;
-import io.spine.server.ServerEnvironment;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
-import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
+import io.spine.example.airport.supplies.PreflightCheckComplete;
+import io.spine.server.aggregate.AggregateRepository;
+import io.spine.server.route.EventRouting;
 
-final class TakeoffsAndLandings {
+import java.util.Set;
 
-    static final String CONTEXT_NAME = "Takeoffs and Landings";
+import static io.spine.server.route.EventRoute.withId;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private TakeoffsAndLandings() {
+final class AircraftRepository extends AggregateRepository<AircraftId, AircraftAggregate> {
+
+    @Override
+    protected void setupEventRouting(EventRouting<AircraftId> routing) {
+        super.setupEventRouting(routing);
+        routing.route(PreflightCheckComplete.class,
+                      (message, context) -> id(message.getPlaneId()));
     }
 
-    static BoundedContext buildContext() {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
-
-        return BoundedContext
-                .singleTenant(CONTEXT_NAME)
-                .add(new FlightRepository())
-                .add(new AircraftRepository())
-                .add(BoardingProcman.class)
-                .build();
+    private static Set<AircraftId> id(String uuid) {
+        return withId(AircraftId.newBuilder()
+                                .setUuid(uuid)
+                                .build());
     }
 }
