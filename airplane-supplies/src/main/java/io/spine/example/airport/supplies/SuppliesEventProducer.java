@@ -38,6 +38,9 @@ import static java.time.Duration.ofMinutes;
 import static java.time.Instant.ofEpochSecond;
 import static java.util.Collections.synchronizedList;
 
+/**
+ * Produces events to be consumed by the {@code Takeoffs and Landings} Context.
+ */
 public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
 
     private static final FluentLogger log = FluentLogger.forEnclosingClass();

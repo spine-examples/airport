@@ -20,7 +20,6 @@
 
 package io.spine.example.weather;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 
