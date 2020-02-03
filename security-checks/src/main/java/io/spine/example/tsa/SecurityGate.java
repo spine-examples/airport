@@ -22,6 +22,7 @@ package io.spine.example.tsa;
 
 import com.google.common.collect.ImmutableList;
 
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
@@ -31,8 +32,7 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 
 final class SecurityGate {
 
-    @SuppressWarnings("UnsecureRandomNumberGeneration")
-    private static final Random rand = new Random();
+    private static final Random rand = new SecureRandom();
     private static final ImmutableList<String> NAMES = ImmutableList.of(
             "Dasher",
             "Dancer",

@@ -24,6 +24,7 @@ import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Random;
 
@@ -127,7 +128,7 @@ public final class Passenger {
 
         public static Status random() {
             Status[] options = Status.values();
-            Random rand = new Random();
+            Random rand = new SecureRandom();
             int index = rand.nextInt(options.length);
             return options[index];
         }
@@ -152,7 +153,7 @@ public final class Passenger {
 
         public static Nationality random() {
             Nationality[] options = Nationality.values();
-            Random rand = new Random();
+            Random rand = new SecureRandom();
             int index = rand.nextInt(options.length);
             return options[index];
         }

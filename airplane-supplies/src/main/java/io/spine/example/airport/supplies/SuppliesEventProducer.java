@@ -26,6 +26,7 @@ import io.grpc.stub.StreamObserver;
 import io.spine.example.airport.supplies.SuppliesEventProducerGrpc.SuppliesEventProducerImplBase;
 import io.spine.protobuf.AnyPacker;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +45,7 @@ import static java.util.Collections.synchronizedList;
 public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
 
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
-    @SuppressWarnings("UnsecureRandomNumberGeneration")
-    private static final Random rand = new Random();
+    private static final Random rand = new SecureRandom();
     private static final List<SuppliesEvent> historicalEvents = synchronizedList(new ArrayList<>());
 
     @Override
