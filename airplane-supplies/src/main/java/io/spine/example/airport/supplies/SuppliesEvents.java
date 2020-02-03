@@ -31,7 +31,7 @@ final class SuppliesEvents {
     private static final TypeUrl ANTI_FROSTING_CHECK_COMPLETE_TYPE =
             TypeUrl.of(AntiFrostingCheckComplete.class);
     private static final TypeUrl PREFLIGHT_CHECK_COMPLETE_TYPE =
-            TypeUrl.of(AntiFrostingCheckComplete.class);
+            TypeUrl.of(PreflightCheckComplete.class);
 
     /**
      * Prevents the utility class instantiation.
