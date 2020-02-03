@@ -20,6 +20,7 @@
 
 package io.spine.example.airport.supplies;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.units.qual.kg;
 
 import java.time.Instant;
@@ -35,8 +36,7 @@ public final class PlaneSupplies {
     private final @kg long fuelMass;
     private final Instant whenFueled;
     private final Instant whenFrostChecked;
-    private final Instant whenPreFlightCheckComplete;
-    private final boolean preFlightCheckSuccessful;
+    private final @Nullable Instant whenPreFlightCheckComplete;
 
     private PlaneSupplies(Builder builder) {
         this.id = builder.id;
@@ -44,7 +44,6 @@ public final class PlaneSupplies {
         this.whenFueled = builder.whenFueled;
         this.whenFrostChecked = builder.whenFrostChecked;
         this.whenPreFlightCheckComplete = builder.whenPreFlightCheckComplete;
-        this.preFlightCheckSuccessful = builder.preFlightCheckSuccessful;
     }
 
     public AirplaneId id() {
@@ -63,12 +62,8 @@ public final class PlaneSupplies {
         return whenFrostChecked;
     }
 
-    public Instant whenPreFlightCheckComplete() {
+    public @Nullable Instant whenPreFlightCheckComplete() {
         return whenPreFlightCheckComplete;
-    }
-
-    public boolean preFlightCheckSuccessful() {
-        return preFlightCheckSuccessful;
     }
 
     /**
@@ -120,11 +115,6 @@ public final class PlaneSupplies {
 
         public Builder setWhenPreFlightCheckComplete(Instant whenPreFlightCheckComplete) {
             this.whenPreFlightCheckComplete = checkNotNull(whenPreFlightCheckComplete);
-            return this;
-        }
-
-        public Builder setPreFlightCheckSuccessful(boolean preFlightCheckSuccessful) {
-            this.preFlightCheckSuccessful = preFlightCheckSuccessful;
             return this;
         }
 

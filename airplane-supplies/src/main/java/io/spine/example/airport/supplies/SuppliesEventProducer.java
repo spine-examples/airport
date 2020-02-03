@@ -81,7 +81,6 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
                 .setWhenFrostChecked(defrostingComplete)
                 .setWhenFueled(fueled)
                 .setFuelMass(rand.nextInt(1000))
-                .setPreFlightCheckSuccessful(rand.nextBoolean())
                 .build();
         putFueled(supplies);
         putFrostingChecked(supplies);
@@ -118,7 +117,8 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
     }
 
     private static void putPreFlightCheckComplete(PlaneSupplies supplies) {
-        if (supplies.preFlightCheckSuccessful()) {
+        boolean checkSuccessful = supplies.whenPreFlightCheckComplete() != null;
+        if (checkSuccessful) {
             PreflightCheckComplete event = PreflightCheckComplete
                     .newBuilder()
                     .setPlaneId(supplies.id().uuid())
