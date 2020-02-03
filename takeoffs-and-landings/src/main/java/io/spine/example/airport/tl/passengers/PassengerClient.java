@@ -20,12 +20,12 @@
 
 package io.spine.example.airport.tl.passengers;
 
-import com.google.gson.Gson;
 import io.spine.core.UserId;
 import io.spine.example.airport.security.PassengerBoarded;
 import io.spine.example.airport.security.PassengerDeniedBoarding;
-import io.spine.example.airport.tl.PollingClient;
 import io.spine.example.airport.tl.FlightId;
+import io.spine.example.airport.tl.PollingClient;
+import io.spine.json.Json;
 import io.spine.logging.Logging;
 import io.spine.net.Url;
 import io.spine.server.integration.ThirdPartyContext;
@@ -62,7 +62,6 @@ public final class PassengerClient implements PollingClient, Logging {
 
     private final Url securityService;
     private final OkHttpClient client;
-    private final Gson parser;
     private final ThirdPartyContext securityContext;
     private volatile boolean active;
 
@@ -70,7 +69,6 @@ public final class PassengerClient implements PollingClient, Logging {
         this.securityService = checkNotNull(service);
         this.securityContext = singleTenant("Security");
         this.client = new OkHttpClient();
-        this.parser = new Gson();
         this.active = true;
     }
 
@@ -147,7 +145,7 @@ public final class PassengerClient implements PollingClient, Logging {
                                   .body();
         checkNotNull(body);
         String jsonResponse = body.string();
-        TsaPassengers passengers = parser.fromJson(jsonResponse, TsaPassengers.class);
+        TsaPassengers passengers = Json.fromJson(jsonResponse, TsaPassengers.class);
         return passengers.getPassengerList();
     }
 
