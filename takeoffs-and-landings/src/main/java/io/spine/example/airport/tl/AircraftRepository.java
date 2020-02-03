@@ -20,6 +20,7 @@
 
 package io.spine.example.airport.tl;
 
+import io.spine.example.airport.supplies.PlaneId;
 import io.spine.example.airport.supplies.PreflightCheckComplete;
 import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.route.EventRouting;
@@ -37,9 +38,9 @@ final class AircraftRepository extends AggregateRepository<AircraftId, AircraftA
                       (message, context) -> id(message.getPlaneId()));
     }
 
-    private static Set<AircraftId> id(String uuid) {
+    private static Set<AircraftId> id(PlaneId planeId) {
         return withId(AircraftId.newBuilder()
-                                .setUuid(uuid)
+                                .setUuid(planeId.getValue())
                                 .build());
     }
 }

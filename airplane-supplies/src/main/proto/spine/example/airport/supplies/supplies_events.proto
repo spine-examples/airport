@@ -9,16 +9,18 @@ option java_package = "io.spine.example.airport.supplies";
 option java_outer_classname = "SuppliesEventsProto";
 option java_multiple_files = true;
 
+import "spine/example/airport/supplies/plane.proto";
+
 message PlaneFueled {
 
-    string plane_id = 1;
+    PlaneId plane_id = 1;
     double fuel_mass = 2;
 }
 
 message AntiFrostingCheckComplete {
-    string plane_id = 1;
+    PlaneId plane_id = 1;
 }
 
 message PreflightCheckComplete {
-    string plane_id = 1;
+    PlaneId plane_id = 1;
 }

@@ -88,9 +88,13 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
     }
 
     private static void putFueled(PlaneSupplies supplies) {
+        PlaneId id = PlaneId
+                .newBuilder()
+                .setValue(supplies.id().uuid())
+                .build();
         PlaneFueled event = PlaneFueled
                 .newBuilder()
-                .setPlaneId(supplies.id().uuid())
+                .setPlaneId(id)
                 .setFuelMass(supplies.fuelMass())
                 .build();
         Timestamp when = fromMillis(supplies.whenFueled().toEpochMilli());
@@ -103,9 +107,13 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
     }
 
     private static void putFrostingChecked(PlaneSupplies supplies) {
+        PlaneId id = PlaneId
+                .newBuilder()
+                .setValue(supplies.id().uuid())
+                .build();
         AntiFrostingCheckComplete event = AntiFrostingCheckComplete
                 .newBuilder()
-                .setPlaneId(supplies.id().uuid())
+                .setPlaneId(id)
                 .build();
         Timestamp when = fromMillis(supplies.whenFrostChecked().toEpochMilli());
         SuppliesEvent suppliesEvent = SuppliesEvent
@@ -119,9 +127,13 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
     private static void putPreFlightCheckComplete(PlaneSupplies supplies) {
         boolean checkSuccessful = supplies.whenPreFlightCheckComplete() != null;
         if (checkSuccessful) {
+            PlaneId id = PlaneId
+                    .newBuilder()
+                    .setValue(supplies.id().uuid())
+                    .build();
             PreflightCheckComplete event = PreflightCheckComplete
                     .newBuilder()
-                    .setPlaneId(supplies.id().uuid())
+                    .setPlaneId(id)
                     .build();
             Timestamp when = fromMillis(supplies.whenPreFlightCheckComplete().toEpochMilli());
             SuppliesEvent suppliesEvent = SuppliesEvent
