@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package spine.example.airport.supplies;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.supplies";
+option java_outer_classname = "PlaneProto";
+option java_multiple_files = true;
+
+// Identifier of an airplane.
+message PlaneId {
+
+    string value = 1;
+}

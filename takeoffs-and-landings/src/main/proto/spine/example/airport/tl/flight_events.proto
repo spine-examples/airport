@@ -1,0 +1,74 @@
+/*
+ * Copyright 2020, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+syntax = "proto3";
+
+package spine.example.airport.tl;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.tl";
+option java_outer_classname = "FlightEventsProto";
+option java_multiple_files = true;
+
+import "spine/example/airport/tl/airport.proto";
+import "spine/example/airport/tl/flight.proto";
+import "spine/time/time.proto";
+
+message FlightScheduled {
+
+    FlightId id = 1;
+
+    time.OffsetDateTime scheduled_departure = 2 [(required) = true, (validate) = true];
+    time.OffsetDateTime scheduled_arrival = 3 [(required) = true, (validate) = true];
+
+    AirportCode from = 4 [(required) = true, (validate) = true];
+    AirportCode to = 5 [(required) = true, (validate) = true];
+}
+
+message FlightRescheduled {
+
+    FlightId id = 1;
+
+    time.OffsetDateTime scheduled_departure = 2 [(required) = true, (validate) = true];
+    time.OffsetDateTime scheduled_arrival = 3 [(required) = true, (validate) = true];
+}
+
+message FlightBoarded {
+
+    FlightId id = 1;
+
+    time.LocalDateTime when = 2 [(required) = false, (validate) = true];
+}
+
+message FlightDeparted {
+
+    FlightId id = 1;
+
+    time.OffsetDateTime when = 2 [(required) = false, (validate) = true];
+}
+
+message FlightArrived {
+
+    FlightId id = 1;
+
+    time.OffsetDateTime when = 2 [(required) = false, (validate) = true];
+}

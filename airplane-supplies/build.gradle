@@ -1,8 +1,27 @@
 plugins {
     id 'io.spine.tools.gradle.bootstrap' version '1.4.0'
+    id 'com.github.psxpaul.execfork' version '0.1.13'
 }
 
-spine.enableJava().server()
+spine.enableJava {
+    codegen {
+        grpc = true
+    }
+}
 
 sourceCompatibility = 1.8
 sourceSets.main.proto.srcDir "$projectDir/src/main/proto"
+
+dependencies {
+    implementation deps.grpc.grpcNettyShaded
+}
+
+task run(type: com.github.psxpaul.task.JavaExecFork) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'io.spine.example.airport.supplies.SuppliesService'
+    waitForPort = 4545
+    killDescendants = false
+
+    standardOutput = "$buildDir/stdout.log"
+    errorOutput = "$buildDir/stderr.log"
+}

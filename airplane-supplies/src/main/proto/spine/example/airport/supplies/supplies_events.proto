@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package spine.example.airport.supplies;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.example.airport.supplies";
+option java_outer_classname = "SuppliesEventsProto";
+option java_multiple_files = true;
+
+import "spine/example/airport/supplies/plane.proto";
+
+message PlaneFueled {
+
+    PlaneId plane_id = 1;
+    double fuel_mass = 2;
+}
+
+message AntiFrostingCheckComplete {
+    PlaneId plane_id = 1;
+}
+
+message PreflightCheckComplete {
+    PlaneId plane_id = 1;
+}
