@@ -21,9 +21,7 @@
 package io.spine.example.airport.tl.weather;
 
 import io.spine.core.UserId;
-import io.spine.example.airport.tl.Temperature;
 import io.spine.example.airport.tl.TemperatureChanged;
-import io.spine.example.airport.tl.WindSpeed;
 import io.spine.example.airport.tl.WindSpeedChanged;
 import io.spine.server.integration.ThirdPartyContext;
 
@@ -56,8 +54,8 @@ public final class WeatherUpdateEndpoint implements AutoCloseable {
     private void postWindChanged(WeatherMeasurement measurement) {
         WindSpeedChanged event = WindSpeedChanged
                 .newBuilder()
-                .setNewSpeed(windSpeed(measurement.windSpeed(), measurement.windDirection()))
-                .setPreviousSpeed(windSpeed(previous.windSpeed(), previous.windDirection()))
+                .setNewSpeed(measurement.toWindSpeed())
+                .setPreviousSpeed(previous.toWindSpeed())
                 .vBuild();
         weatherContext.emittedEvent(event, actor);
     }
@@ -65,25 +63,10 @@ public final class WeatherUpdateEndpoint implements AutoCloseable {
     private void postTemperatureChanged(WeatherMeasurement measurement) {
         TemperatureChanged event = TemperatureChanged
                 .newBuilder()
-                .setNewTemperature(temperature(measurement.temperature()))
-                .setPreviousTemperature(temperature(previous.temperature()))
+                .setNewTemperature(measurement.toTemperature())
+                .setPreviousTemperature(measurement.toTemperature())
                 .vBuild();
         weatherContext.emittedEvent(event, actor);
-    }
-
-    private static Temperature temperature(float value) {
-        return Temperature
-                .newBuilder()
-                .setDegreesCelsius(value)
-                .build();
-    }
-
-    private static WindSpeed windSpeed(float speed, float direction) {
-        return WindSpeed
-                .newBuilder()
-                .setValue(speed)
-                .setAzimuth(direction)
-                .build();
     }
 
     @Override

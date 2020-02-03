@@ -22,6 +22,8 @@ package io.spine.example.airport.tl.weather;
 
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
+import io.spine.example.airport.tl.Temperature;
+import io.spine.example.airport.tl.WindSpeed;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -64,6 +66,21 @@ public final class WeatherMeasurement {
 
     public boolean isUnknown() {
         return this == unknownWeather;
+    }
+
+    public WindSpeed toWindSpeed() {
+        return WindSpeed
+                .newBuilder()
+                .setValue(windSpeed())
+                .setAzimuth(windDirection())
+                .build();
+    }
+
+    public Temperature toTemperature() {
+        return Temperature
+                .newBuilder()
+                .setDegreesCelsius(temperature())
+                .build();
     }
 
     @Override
