@@ -27,6 +27,9 @@ import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An identifier of an airplane.
+ */
 public final class AirplaneId {
 
     private final String uuid;
@@ -35,6 +38,9 @@ public final class AirplaneId {
         this.uuid = checkNotNull(uuid);
     }
 
+    /**
+     * Creates a new ID with a random value.
+     */
     public static AirplaneId newId() {
         return new AirplaneId(UUID.randomUUID().toString());
     }

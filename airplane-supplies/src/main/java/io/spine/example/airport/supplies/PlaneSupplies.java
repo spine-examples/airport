@@ -26,6 +26,9 @@ import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Supplies of a single plane for a single flight.
+ */
 public final class PlaneSupplies {
 
     private final AirplaneId id;
