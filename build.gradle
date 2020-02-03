@@ -2,7 +2,7 @@ group 'io.spine.example'
 version '1.0-SNAPSHOT'
 
 subprojects {
-    apply from: "$rootDir/config/gradle/dependencies.gradle"
+    apply from: "$rootDir/gradle/dependencies.gradle"
 
     repositories {
         jcenter()
