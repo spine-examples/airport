@@ -42,7 +42,7 @@ dependencies {
 
 task run(type: com.github.psxpaul.task.JavaExecFork) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'io.spine.example.tsa.Main'
+    main = 'io.spine.example.tsa.SecurityChecksService'
     waitForPort = 8282
     killDescendants = false
 

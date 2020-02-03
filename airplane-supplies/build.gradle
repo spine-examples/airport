@@ -18,7 +18,7 @@ dependencies {
 
 task run(type: com.github.psxpaul.task.JavaExecFork) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'io.spine.example.airport.supplies.Main'
+    main = 'io.spine.example.airport.supplies.SuppliesService'
     waitForPort = 4545
     killDescendants = false
 

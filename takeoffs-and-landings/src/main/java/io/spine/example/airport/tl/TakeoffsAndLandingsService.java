@@ -34,7 +34,7 @@ import io.spine.server.SubscriptionService;
 
 import static java.util.concurrent.ForkJoinPool.commonPool;
 
-final class Main {
+final class TakeoffsAndLandingsService {
 
     private static final int PORT = 8484;
     private static final Url WEATHER_SERVICE = Url
@@ -50,11 +50,11 @@ final class Main {
     /**
      * Prevents the utility class instantiation.
      */
-    private Main() {
+    private TakeoffsAndLandingsService() {
     }
 
     public static void main(String[] args) throws Exception {
-        BoundedContext context = TakeoffsAndLandings.buildContext();
+        BoundedContext context = TakeoffsAndLandingsContext.build();
         QueryService queryService = queryService(context);
         GrpcContainer container = GrpcContainer
                 .atPort(PORT)

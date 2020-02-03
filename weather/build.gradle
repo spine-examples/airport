@@ -42,7 +42,7 @@ dependencies {
 
 task run(type: com.github.psxpaul.task.JavaExecFork) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'io.spine.example.weather.Main'
+    main = 'io.spine.example.weather.WeatherService'
     waitForPort = 4242
     killDescendants = false
 

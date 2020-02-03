@@ -26,14 +26,14 @@ import io.grpc.ServerBuilder;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-final class Main {
+final class SuppliesService {
 
     private static final int PORT = 4545;
 
     /**
      * Prevents the utility class instantiation.
      */
-    private Main() {
+    private SuppliesService() {
     }
 
     public static void main(String[] args) throws InterruptedException {

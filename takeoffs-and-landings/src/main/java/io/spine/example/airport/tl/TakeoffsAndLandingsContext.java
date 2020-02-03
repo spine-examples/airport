@@ -26,17 +26,23 @@ import io.spine.server.ServerEnvironment;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.transport.memory.SingleThreadInMemTransportFactory;
 
-final class TakeoffsAndLandings {
+/**
+ * A factory for the {@code Takeoffs and Landings} {@link BoundedContext} instance.
+ */
+final class TakeoffsAndLandingsContext {
 
     static final String CONTEXT_NAME = "Takeoffs and Landings";
 
     /**
      * Prevents the utility class instantiation.
      */
-    private TakeoffsAndLandings() {
+    private TakeoffsAndLandingsContext() {
     }
 
-    static BoundedContext buildContext() {
+    /**
+     * Assembles the {@code Takeoffs and Landings} context.
+     */
+    static BoundedContext build() {
         ServerEnvironment env = ServerEnvironment.instance();
         env.configureStorage(InMemoryStorageFactory.newInstance());
         env.configureTransport(SingleThreadInMemTransportFactory.newInstance());

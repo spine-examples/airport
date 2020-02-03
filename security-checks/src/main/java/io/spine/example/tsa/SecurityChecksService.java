@@ -28,14 +28,14 @@ import static java.util.concurrent.ForkJoinPool.commonPool;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
-final class Main {
+final class SecurityChecksService {
 
     private static final int PORT = 8282;
 
     /**
      * Prevents the utility class instantiation.
      */
-    private Main() {
+    private SecurityChecksService() {
     }
 
     public static void main(String[] args) {

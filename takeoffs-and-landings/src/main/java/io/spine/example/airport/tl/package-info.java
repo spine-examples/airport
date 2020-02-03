@@ -1,5 +1,5 @@
 
-@BoundedContext(TakeoffsAndLandings.CONTEXT_NAME)
+@BoundedContext(TakeoffsAndLandingsContext.CONTEXT_NAME)
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.example.airport.tl;

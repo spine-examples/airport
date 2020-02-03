@@ -34,7 +34,7 @@ import static spark.Spark.defaultResponseTransformer;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
-final class Main {
+final class WeatherService {
 
     private static final FluentLogger log = forEnclosingClass();
     private static final ExecutorService meteoLabThread = newSingleThreadExecutor();
@@ -43,7 +43,7 @@ final class Main {
     /**
      * Prevents the utility class instantiation.
      */
-    private Main() {
+    private WeatherService() {
     }
 
     public static void main(String[] args) {

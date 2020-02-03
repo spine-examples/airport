@@ -37,7 +37,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'io.spine.example.airport.tl.Main'
+    mainClassName = 'io.spine.example.airport.tl.TakeoffsAndLandingsService'
 }
 
 run {
