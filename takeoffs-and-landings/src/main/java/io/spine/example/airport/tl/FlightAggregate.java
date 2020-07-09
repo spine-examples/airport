@@ -22,6 +22,7 @@ package io.spine.example.airport.tl;
 
 import com.google.protobuf.Timestamp;
 import io.spine.core.EventContext;
+import io.spine.core.External;
 import io.spine.example.airport.security.BoardingComplete;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
@@ -74,8 +75,8 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
                 .vBuild();
     }
 
-    @React(external = true)
-    EitherOf2<FlightRescheduled, Nothing> on(WindSpeedChanged event) {
+    @React
+    EitherOf2<FlightRescheduled, Nothing> on(@External WindSpeedChanged event) {
         double newDirection = event.getNewSpeed().getAzimuth();
         double previousDirection = event.getPreviousSpeed().getAzimuth();
         if (abs(previousDirection - newDirection) > WIND_DIRECTION_CHANGE_THRESHOLD) {
@@ -88,8 +89,8 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
         return withB(nothing());
     }
 
-    @React(external = true)
-    EitherOf2<FlightRescheduled, Nothing> on(TemperatureChanged event) {
+    @React
+    EitherOf2<FlightRescheduled, Nothing> on(@External TemperatureChanged event) {
         float newTemperature = event.getNewTemperature().getDegreesCelsius();
         float previousTemperature = event.getPreviousTemperature().getDegreesCelsius();
         if (abs(previousTemperature - newTemperature) > TEMPERATURE_CHANGE_THRESHOLD) {

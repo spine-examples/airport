@@ -20,6 +20,7 @@
 
 package io.spine.example.airport.tl.passengers;
 
+import io.spine.core.External;
 import io.spine.example.airport.security.BoardingComplete;
 import io.spine.example.airport.security.PassengerBoarded;
 import io.spine.example.airport.security.PassengerDeniedBoarding;
@@ -34,15 +35,15 @@ import static io.spine.server.tuple.EitherOf2.withB;
 
 public class BoardingProcman extends ProcessManager<FlightId, Boarding, Boarding.Builder> {
 
-    @React(external = true)
-    EitherOf2<BoardingComplete, Nothing> on(PassengerBoarded event) {
+    @React
+    EitherOf2<BoardingComplete, Nothing> on(@External PassengerBoarded event) {
         PassengerId passenger = event.getId();
         builder().addBoarded(passenger);
         return completeOrNothing();
     }
 
-    @React(external = true)
-    EitherOf2<BoardingComplete, Nothing> on(PassengerDeniedBoarding event) {
+    @React
+    EitherOf2<BoardingComplete, Nothing> on(@External PassengerDeniedBoarding event) {
         PassengerId passenger = event.getId();
         builder().addWillNotBeBoarded(passenger);
         return completeOrNothing();

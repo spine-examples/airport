@@ -20,6 +20,7 @@
 
 package io.spine.example.airport.tl;
 
+import io.spine.core.External;
 import io.spine.example.airport.supplies.PreflightCheckComplete;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
@@ -27,8 +28,8 @@ import io.spine.server.event.React;
 
 final class AircraftAggregate extends Aggregate<AircraftId, Aircraft, Aircraft.Builder> {
 
-    @React(external = true)
-    AircraftPreparedForFlight on(PreflightCheckComplete event) {
+    @React
+    AircraftPreparedForFlight on(@External PreflightCheckComplete event) {
         return AircraftPreparedForFlight
                 .newBuilder()
                 .setId(id())
