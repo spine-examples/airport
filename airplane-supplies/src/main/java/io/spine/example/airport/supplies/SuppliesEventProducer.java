@@ -42,12 +42,16 @@ import static java.util.Collections.synchronizedList;
 /**
  * Produces events to be consumed by the {@code Takeoffs and Landings} Context.
  */
+
+// #docfragment "SuppliesEventProducer"
 public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
+// #enddocfragment "SuppliesEventProducer"
 
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private static final Random rand = new SecureRandom();
     private static final List<SuppliesEvent> historicalEvents = synchronizedList(new ArrayList<>());
 
+    // #docfragment "SuppliesEventProducer"
     @Override
     public void subscribe(Subscription request, StreamObserver<SuppliesEvent> responseObserver) {
         produceRandom();
@@ -68,6 +72,7 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
                 .onClose(responseObserver::onCompleted)
                 .forEach(responseObserver::onNext);
     }
+    // #enddocfragment "SuppliesEventProducer"
 
     private static void produceRandom() {
         AirplaneId id = AirplaneId.newId();
@@ -148,4 +153,6 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
     private static Instant randomTimeInPast() {
         return Instant.now().minus(ofMinutes(rand.nextInt(1000)));
     }
+// #docfragment "SuppliesEventProducer"
 }
+// #enddocfragment "SuppliesEventProducer"

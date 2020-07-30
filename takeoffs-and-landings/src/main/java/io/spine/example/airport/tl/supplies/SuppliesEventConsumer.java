@@ -87,6 +87,7 @@ public final class SuppliesEventConsumer implements AutoCloseable {
             this.subscription = checkNotNull(subscription);
         }
 
+        // #docfragment "onNext"
         @Override
         public void onNext(SuppliesEvent event) {
             Subscription eventSubscription = event.getSubscription();
@@ -102,6 +103,7 @@ public final class SuppliesEventConsumer implements AutoCloseable {
             EventMessage eventMessage = (EventMessage) unpack(event.getPayload());
             context.emittedEvent(eventMessage, actorContext);
         }
+        // #enddocfragment "onNext"
 
         @Override
         public void onError(Throwable t) {
