@@ -73,6 +73,7 @@ public final class PassengerClient implements PollingClient, Logging {
     }
 
     @Override
+    // #docfragment "Fetch passengers"
     public void start() {
         while (active) {
             Request request = requestPassengers();
@@ -95,6 +96,7 @@ public final class PassengerClient implements PollingClient, Logging {
             emitDenied(tsaPassenger);
         }
     }
+    // #enddocfragment "Fetch passengers"
 
     private Request requestPassengers() {
         Instant now = Instant.now();
