@@ -45,28 +45,20 @@ public final class WeatherUpdateEndpoint implements AutoCloseable {
     public void receiveNew(WeatherMeasurement measurement) {
         checkNotNull(measurement);
         if (!previous.isUnknown()) {
-            postTemperatureChanged(measurement);
-            postWindChanged(measurement);
+            TemperatureChanged event = TemperatureChanged
+                    .newBuilder()
+                    .setNewTemperature(measurement.toTemperature())
+                    .setPreviousTemperature(measurement.toTemperature())
+                    .vBuild();
+            weatherContext.emittedEvent(event, actor);
+            WindSpeedChanged event1 = WindSpeedChanged
+                    .newBuilder()
+                    .setNewSpeed(measurement.toWindSpeed())
+                    .setPreviousSpeed(previous.toWindSpeed())
+                    .vBuild();
+            weatherContext.emittedEvent(event1, actor);
         }
         previous = measurement;
-    }
-
-    private void postWindChanged(WeatherMeasurement measurement) {
-        WindSpeedChanged event = WindSpeedChanged
-                .newBuilder()
-                .setNewSpeed(measurement.toWindSpeed())
-                .setPreviousSpeed(previous.toWindSpeed())
-                .vBuild();
-        weatherContext.emittedEvent(event, actor);
-    }
-
-    private void postTemperatureChanged(WeatherMeasurement measurement) {
-        TemperatureChanged event = TemperatureChanged
-                .newBuilder()
-                .setNewTemperature(measurement.toTemperature())
-                .setPreviousTemperature(measurement.toTemperature())
-                .vBuild();
-        weatherContext.emittedEvent(event, actor);
     }
 
     @Override
