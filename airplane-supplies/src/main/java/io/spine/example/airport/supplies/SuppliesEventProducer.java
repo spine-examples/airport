@@ -50,8 +50,8 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
     // #docfragment "SuppliesEventProducer"
     @Override
     public void subscribe(Subscription request, StreamObserver<SuppliesEvent> responseObserver) {
-        produceRandom();
         // #enddocfragment "SuppliesEventProducer"
+        produceRandom();
         // #docfragment "SuppliesEventProducer"
         Timestamp timestamp = request.getStartingFrom();
         historicalEvents
