@@ -65,7 +65,6 @@ public class WeatherUpdateClient implements PollingClient, Logging {
         }
     }
 
-    // #docfragment "fetchWeatherUpdates"
     private void fetchWeatherUpdates() {
         Instant lastEvent = lastEventTime;
         lastEventTime = Instant.now();
@@ -87,7 +86,6 @@ public class WeatherUpdateClient implements PollingClient, Logging {
                     .log();
         }
     }
-    // #enddocfragment "fetchWeatherUpdates"
 
     @Override
     public void close() throws Exception {

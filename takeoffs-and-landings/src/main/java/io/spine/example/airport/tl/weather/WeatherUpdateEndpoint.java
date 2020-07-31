@@ -42,7 +42,6 @@ public final class WeatherUpdateEndpoint implements AutoCloseable {
     /**
      * Publishes the given measurement as weather update events.
      */
-    // #docfragment "receiveNew"
     public void receiveNew(WeatherMeasurement measurement) {
         checkNotNull(measurement);
         if (!previous.isUnknown()) {
@@ -61,7 +60,6 @@ public final class WeatherUpdateEndpoint implements AutoCloseable {
         }
         previous = measurement;
     }
-    // #enddocfragment "receiveNew"
 
     @Override
     public void close() throws Exception {

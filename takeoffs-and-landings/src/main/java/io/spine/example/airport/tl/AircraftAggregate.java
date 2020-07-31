@@ -28,7 +28,6 @@ import io.spine.server.event.React;
 
 final class AircraftAggregate extends Aggregate<AircraftId, Aircraft, Aircraft.Builder> {
 
-    // #docfragment "AircraftPreparedForFlight"
     @React
     AircraftPreparedForFlight on(@External PreflightCheckComplete event) {
         return AircraftPreparedForFlight
@@ -36,7 +35,6 @@ final class AircraftAggregate extends Aggregate<AircraftId, Aircraft, Aircraft.B
                 .setId(id())
                 .vBuild();
     }
-    // #enddocfragment "AircraftPreparedForFlight"
 
     @Apply
     private void on(AircraftPreparedForFlight event) {
