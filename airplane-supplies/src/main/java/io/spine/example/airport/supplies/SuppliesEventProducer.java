@@ -20,7 +20,6 @@
 
 package io.spine.example.airport.supplies;
 
-import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
 import io.spine.example.airport.supplies.SuppliesEventProducerGrpc.SuppliesEventProducerImplBase;
@@ -36,30 +35,27 @@ import static com.google.protobuf.util.Timestamps.compare;
 import static com.google.protobuf.util.Timestamps.fromMillis;
 import static io.spine.example.airport.supplies.SuppliesEvents.matches;
 import static java.time.Duration.ofMinutes;
-import static java.time.Instant.ofEpochSecond;
 import static java.util.Collections.synchronizedList;
 
 /**
  * Produces events to be consumed by the {@code Takeoffs and Landings} Context.
  */
+// #docfragment "SuppliesEventProducer"
 public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
+// #enddocfragment "SuppliesEventProducer"
 
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private static final Random rand = new SecureRandom();
     private static final List<SuppliesEvent> historicalEvents = synchronizedList(new ArrayList<>());
 
+    // #docfragment "SuppliesEventProducer"
     @Override
     public void subscribe(Subscription request, StreamObserver<SuppliesEvent> responseObserver) {
+        // #enddocfragment "SuppliesEventProducer"
         produceRandom();
+        // #docfragment "SuppliesEventProducer"
         Timestamp timestamp = request.getStartingFrom();
-        Instant startingFrom = ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
-        log.atFine().log("New subscription for events of type `%s` since `%s`.",
-                         request.getEventType(),
-                         startingFrom);
         historicalEvents
                 .stream()
-                .parallel()
-                .unordered()
                 .filter(event -> compare(event.getWhenOccurred(), timestamp) >= 0)
                 .filter(event -> matches(event, request.getEventType()))
                 .map(event -> event.toBuilder()
@@ -68,6 +64,7 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
                 .onClose(responseObserver::onCompleted)
                 .forEach(responseObserver::onNext);
     }
+    // #enddocfragment "SuppliesEventProducer"
 
     private static void produceRandom() {
         AirplaneId id = AirplaneId.newId();
@@ -148,4 +145,6 @@ public final class SuppliesEventProducer extends SuppliesEventProducerImplBase {
     private static Instant randomTimeInPast() {
         return Instant.now().minus(ofMinutes(rand.nextInt(1000)));
     }
+// #docfragment "SuppliesEventProducer"
 }
+// #enddocfragment "SuppliesEventProducer"

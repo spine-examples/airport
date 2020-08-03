@@ -89,6 +89,7 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
         return withB(nothing());
     }
 
+    // #docfragment "TemperatureChanged"
     @React
     EitherOf2<FlightRescheduled, Nothing> on(@External TemperatureChanged event) {
         float newTemperature = event.getNewTemperature().getDegreesCelsius();
@@ -99,6 +100,7 @@ final class FlightAggregate extends Aggregate<FlightId, Flight, Flight.Builder> 
             return withB(nothing());
         }
     }
+    // #enddocfragment "TemperatureChanged"
 
     @React
     FlightBoarded on(BoardingComplete event, EventContext context) {

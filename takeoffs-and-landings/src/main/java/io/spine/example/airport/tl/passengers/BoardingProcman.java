@@ -35,6 +35,7 @@ import static io.spine.server.tuple.EitherOf2.withB;
 
 public class BoardingProcman extends ProcessManager<FlightId, Boarding, Boarding.Builder> {
 
+    // #docfragment "BoardingProcman"
     @React
     EitherOf2<BoardingComplete, Nothing> on(@External PassengerBoarded event) {
         PassengerId passenger = event.getId();
@@ -48,6 +49,7 @@ public class BoardingProcman extends ProcessManager<FlightId, Boarding, Boarding
         builder().addWillNotBeBoarded(passenger);
         return completeOrNothing();
     }
+    // #enddocfragment "BoardingProcman"
 
     private EitherOf2<BoardingComplete, Nothing> completeOrNothing() {
         int headCount = builder().getBoardedCount();

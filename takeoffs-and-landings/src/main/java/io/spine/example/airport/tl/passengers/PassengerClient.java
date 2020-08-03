@@ -73,18 +73,10 @@ public final class PassengerClient implements PollingClient, Logging {
     }
 
     @Override
+    // #docfragment "Fetch passengers"
     public void start() {
         while (active) {
-            Instant now = Instant.now();
-            Instant anHourAgo = now.minus(ofHours(1));
-            String url = format("%s/passenger?since=%s&upto=%s",
-                                securityService.getSpec(),
-                                anHourAgo.getEpochSecond(),
-                                now.getEpochSecond());
-            Request request = new Request.Builder()
-                    .get()
-                    .url(url)
-                    .build();
+            Request request = requestPassengers();
             try {
                 List<TsaPassenger> passengers = fetchPassengers(request);
                 passengers.forEach(this::emitIfStatusKnown);
@@ -103,6 +95,21 @@ public final class PassengerClient implements PollingClient, Logging {
         } else if (status == WILL_NOT_BE_BOARDED) {
             emitDenied(tsaPassenger);
         }
+    }
+    // #enddocfragment "Fetch passengers"
+
+    private Request requestPassengers() {
+        Instant now = Instant.now();
+        Instant anHourAgo = now.minus(ofHours(1));
+        String url = format("%s/passenger?since=%s&upto=%s",
+                            securityService.getSpec(),
+                            anHourAgo.getEpochSecond(),
+                            now.getEpochSecond());
+        Request request = new Request.Builder()
+                .get()
+                .url(url)
+                .build();
+        return request;
     }
 
     private void emitDenied(TsaPassenger tsaPassenger) {
