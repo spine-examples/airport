@@ -2,7 +2,7 @@
 
 This repository contains an example of a multi-context Airport Management system.
 
-The repository accompanies the article on third-party integration in Spine posted in our blog.
+The repository accompanies the [“Integration with a Third Party”](https://spine.io/docs/guides/integration.html) guide.
 
 ## Structure
 
