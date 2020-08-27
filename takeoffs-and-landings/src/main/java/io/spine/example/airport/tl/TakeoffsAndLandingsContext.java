@@ -20,6 +20,8 @@
 
 package io.spine.example.airport.tl;
 
+import io.spine.base.Environment;
+import io.spine.base.EnvironmentType;
 import io.spine.example.airport.tl.passengers.BoardingProcman;
 import io.spine.server.BoundedContext;
 import io.spine.server.ServerEnvironment;
@@ -43,9 +45,11 @@ final class TakeoffsAndLandingsContext {
      * Assembles the {@code Takeoffs and Landings} context.
      */
     static BoundedContext build() {
-        ServerEnvironment env = ServerEnvironment.instance();
-        env.configureStorage(InMemoryStorageFactory.newInstance());
-        env.configureTransport(SingleThreadInMemTransportFactory.newInstance());
+        ServerEnvironment serverEnv = ServerEnvironment.instance();
+        Environment env = Environment.instance();
+        Class<? extends EnvironmentType> envType = env.type();
+        serverEnv.use(InMemoryStorageFactory.newInstance(), envType);
+        serverEnv.use(SingleThreadInMemTransportFactory.newInstance(), envType);
 
         return BoundedContext
                 .singleTenant(CONTEXT_NAME)
