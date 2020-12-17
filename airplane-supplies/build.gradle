@@ -39,7 +39,10 @@ sourceCompatibility = 1.8
 sourceSets.main.proto.srcDir "$projectDir/src/main/proto"
 
 dependencies {
-    implementation deps.grpc.grpcNettyShaded
+    implementation(
+            deps.build.annotationApi,
+            deps.grpc.grpcNettyShaded
+    )
 }
 
 task run(type: com.github.psxpaul.task.JavaExecFork) {

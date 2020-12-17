@@ -38,8 +38,11 @@ sourceCompatibility = 1.8
 
 dependencies {
     protobuf project(':airplane-supplies')
-    implementation deps.grpc.grpcNettyShaded
-    implementation "com.squareup.okhttp3:okhttp:4.7.2"
+    implementation(
+            "com.squareup.okhttp3:okhttp:4.7.2",
+            deps.build.annotationApi,
+            deps.grpc.grpcNettyShaded
+    )
 }
 
 application {

@@ -37,6 +37,7 @@ dependencies {
     implementation (
             'com.google.code.gson:gson:2.8.6',
             'com.sparkjava:spark-core:2.9.1',
+            deps.build.annotationApi,
             deps.build.guava,
             deps.build.flogger,
             deps.build.jsr305Annotations,
