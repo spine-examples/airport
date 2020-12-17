@@ -19,7 +19,7 @@
  */
 
 plugins {
-    id 'io.spine.tools.gradle.bootstrap' version '1.6.0'
+    id 'io.spine.tools.gradle.bootstrap' version '1.7.0'
     id 'com.github.psxpaul.execfork' version '0.1.13'
 }
 

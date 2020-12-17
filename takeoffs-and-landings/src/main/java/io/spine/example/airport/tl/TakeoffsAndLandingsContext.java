@@ -45,11 +45,11 @@ final class TakeoffsAndLandingsContext {
      * Assembles the {@code Takeoffs and Landings} context.
      */
     static BoundedContext build() {
-        ServerEnvironment serverEnv = ServerEnvironment.instance();
         Environment env = Environment.instance();
-        Class<? extends EnvironmentType> envType = env.type();
-        serverEnv.use(InMemoryStorageFactory.newInstance(), envType);
-        serverEnv.use(SingleThreadInMemTransportFactory.newInstance(), envType);
+        ServerEnvironment
+                .when(env.type())
+                .use(InMemoryStorageFactory.newInstance())
+                .use(SingleThreadInMemTransportFactory.newInstance());
 
         return BoundedContext
                 .singleTenant(CONTEXT_NAME)
