@@ -27,27 +27,31 @@
 package io.spine.example.weather;
 
 import java.time.Instant;
-import java.util.SortedSet;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static java.util.Collections.synchronizedSortedSet;
+import static java.util.Collections.synchronizedNavigableSet;
 
-public final class MeasurementRepository {
+final class MeasurementRepository {
 
-    private final SortedSet<Measurement> measurements = synchronizedSortedSet(new TreeSet<>());
+    private final NavigableSet<Measurement> measurements =
+            synchronizedNavigableSet(new TreeSet<>());
 
-    public Measurements between(Instant startTime, Instant endTime) {
+    Measurements between(Instant startTime, Instant endTime) {
         checkNotNull(startTime);
         checkNotNull(endTime);
 
-        return new Measurements(measurements.stream()
-                                            .filter(m -> m.isIn(startTime, endTime))
-                                            .collect(toImmutableList()));
+        return new Measurements(
+                measurements
+                        .stream()
+                        .filter(m -> m.isIn(startTime, endTime))
+                        .collect(toImmutableList())
+        );
     }
 
-    public void store(Measurement measurement) {
+    void store(Measurement measurement) {
         checkNotNull(measurement);
 
         measurements.add(measurement);
