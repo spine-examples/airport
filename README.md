@@ -1,8 +1,16 @@
+[![Build Status][travis-badge]](https://travis-ci.com/spine-examples/airport) &nbsp;
+[![license][license-badge]](http://www.apache.org/licenses/LICENSE-2.0)
+
+[travis-badge]: https://travis-ci.com/spine-examples/airport.svg?branch=master
+[license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
+
 # Airport
 
 This repository contains an example of a multi-context Airport Management system.
 
-The repository accompanies the [“Integration with a Third Party”](https://spine.io/docs/guides/integration.html) guide.
+The repository accompanies the [“Integration with a Third Party”][integration] guide.
+
+[integration]: https://spine.io/docs/guides/integration.html
 
 ## Structure
 
