@@ -1,7 +1,8 @@
-[![Build Status][travis-badge]](https://travis-ci.com/spine-examples/airport) &nbsp;
+![Build Status][travis-badge] &nbsp;
 [![license][license-badge]](http://www.apache.org/licenses/LICENSE-2.0)
 
-[travis-badge]: https://travis-ci.com/spine-examples/airport.svg?branch=master
+
+[actions-badge]: https://github.com/actions/hello-world/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=master
 [license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 # Airport
