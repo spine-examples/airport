@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -45,11 +51,11 @@ final class TakeoffsAndLandingsContext {
      * Assembles the {@code Takeoffs and Landings} context.
      */
     static BoundedContext build() {
-        ServerEnvironment serverEnv = ServerEnvironment.instance();
         Environment env = Environment.instance();
-        Class<? extends EnvironmentType> envType = env.type();
-        serverEnv.use(InMemoryStorageFactory.newInstance(), envType);
-        serverEnv.use(SingleThreadInMemTransportFactory.newInstance(), envType);
+        ServerEnvironment
+                .when(env.type())
+                .use(InMemoryStorageFactory.newInstance())
+                .use(SingleThreadInMemTransportFactory.newInstance());
 
         return BoundedContext
                 .singleTenant(CONTEXT_NAME)

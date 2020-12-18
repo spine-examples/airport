@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -29,23 +35,24 @@
 ext.repos = [
 
         // Spine CloudRepo Repository
-        spine             : 'https://spine.mycloudrepo.io/public/repositories/releases',
-        gradlePlugins     : 'https://plugins.gradle.org/m2/'
+        spine            : 'https://spine.mycloudrepo.io/public/repositories/releases',
+        gradlePlugins    : 'https://plugins.gradle.org/m2/'
 ]
 
 final def versions = [
-        errorProne       : '2.3.4',
+        errorProne       : '2.4.0',
         errorProneJavac  : '9+181-r4173-1', // taken from here: https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
-        errorPronePlugin : '1.2.1',
+        errorPronePlugin : '1.3.0',
         findBugs         : '3.0.2',
-        guava            : '29.0-jre',
+        guava            : '30.0-jre',
         grpc             : '1.28.1',
         flogger          : '0.5.1',
+        annotationApi    : '1.3.2'
 ]
 
 final def build = [
         errorProneJavac        : "com.google.errorprone:javac:$versions.errorProneJavac",
-        errorProneAnnotations: [
+        errorProneAnnotations  : [
                 "com.google.errorprone:error_prone_annotations:$versions.errorProne",
                 "com.google.errorprone:error_prone_type_annotations:$versions.errorProne"
         ],
@@ -58,7 +65,9 @@ final def build = [
         guava                  : "com.google.guava:guava:$versions.guava",
         flogger                : "com.google.flogger:flogger:$versions.flogger",
 
-        ci: 'true' == System.getenv('CI'),
+        annotationApi          : "javax.annotation:javax.annotation-api:$versions.annotationApi",
+
+        ci                     : 'true' == System.getenv('CI'),
 ]
 
 final def grpc = [
@@ -67,7 +76,7 @@ final def grpc = [
 ]
 
 final def runtime = [
-        floggerSystemBackend : "com.google.flogger:flogger-system-backend:$versions.flogger",
+        floggerSystemBackend   : "com.google.flogger:flogger-system-backend:$versions.flogger",
 ]
 
 ext.deps = [

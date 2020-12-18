@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -20,30 +26,36 @@
 
 package io.spine.example.weather;
 
+import com.google.common.collect.ImmutableList;
+
 import java.time.Instant;
-import java.util.SortedSet;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static java.util.Collections.synchronizedSortedSet;
+import static java.util.Collections.synchronizedNavigableSet;
 
-public final class MeasurementRepository {
+final class MeasurementRepository {
 
-    private final SortedSet<Measurement> measurements = synchronizedSortedSet(new TreeSet<>());
+    private final NavigableSet<Measurement> measurements =
+            synchronizedNavigableSet(new TreeSet<>());
 
-    public Measurements between(Instant startTime, Instant endTime) {
+    Measurements between(Instant startTime, Instant endTime) {
         checkNotNull(startTime);
         checkNotNull(endTime);
-
-        return new Measurements(measurements.stream()
-                                            .filter(m -> m.isIn(startTime, endTime))
-                                            .collect(toImmutableList()));
+        return new Measurements(inPeriod(startTime, endTime));
     }
 
-    public void store(Measurement measurement) {
-        checkNotNull(measurement);
+    void store(Measurement m) {
+        checkNotNull(m);
+        measurements.add(m);
+    }
 
-        measurements.add(measurement);
+    private ImmutableList<Measurement> inPeriod(Instant startTime, Instant endTime) {
+        return measurements
+                .stream()
+                .filter(m -> m.isIn(startTime, endTime))
+                .collect(toImmutableList());
     }
 }
