@@ -26,6 +26,8 @@
 
 package io.spine.example.weather;
 
+import com.google.common.collect.ImmutableList;
+
 import java.time.Instant;
 import java.util.NavigableSet;
 import java.util.TreeSet;
@@ -42,18 +44,18 @@ final class MeasurementRepository {
     Measurements between(Instant startTime, Instant endTime) {
         checkNotNull(startTime);
         checkNotNull(endTime);
-
-        return new Measurements(
-                measurements
-                        .stream()
-                        .filter(m -> m.isIn(startTime, endTime))
-                        .collect(toImmutableList())
-        );
+        return new Measurements(inPeriod(startTime, endTime));
     }
 
-    void store(Measurement measurement) {
-        checkNotNull(measurement);
+    void store(Measurement m) {
+        checkNotNull(m);
+        measurements.add(m);
+    }
 
-        measurements.add(measurement);
+    private ImmutableList<Measurement> inPeriod(Instant startTime, Instant endTime) {
+        return measurements
+                .stream()
+                .filter(m -> m.isIn(startTime, endTime))
+                .collect(toImmutableList());
     }
 }
