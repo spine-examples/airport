@@ -2,7 +2,7 @@
 [![license][license-badge]](http://www.apache.org/licenses/LICENSE-2.0)
 
 
-[actions-badge]: https://github.com/actions/hello-world/workflows/CI/badge.svg?branch=master
+[actions-badge]: https://github.com/spine-examples/airport/workflows/CI/badge.svg?branch=master
 [license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 # Airport
