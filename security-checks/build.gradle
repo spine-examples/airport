@@ -27,7 +27,7 @@
 plugins {
     id 'java'
     id 'net.ltgt.errorprone' version '2.0.2'
-    id 'com.github.psxpaul.execfork' version '0.1.15'
+    id 'com.github.psxpaul.execfork' version '0.1.13'
 }
 
 dependencies {
