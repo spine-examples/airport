@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
  */
 
 plugins {
-    id 'io.spine.tools.gradle.bootstrap' version '1.7.0'
+    id 'io.spine.tools.gradle.bootstrap' version '1.8.0'
     id 'com.github.psxpaul.execfork' version '0.1.13'
 }
 
